@@ -1,0 +1,15 @@
+{
+  "@@locale": "en",
+  "appTitle": "Delivery App",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "welcomeMessage": "Welcome back!",
+  "@welcomeMessage": {
+    "description": "Welcome message shown on the home screen"
+  },
+  "loginButton": "Login",
+  "@loginButton": {
+    "description": "Label for the login button"
+  }
+}
