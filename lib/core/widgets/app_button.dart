@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_text_styles.dart';
+import '../../config/theme/app_radius.dart';
+import '../../config/theme/app_spacing.dart';
 
-/// Button variant enum for primary and secondary styles.
-enum AppButtonVariant { primary, secondary }
+/// Button variant enum.
+enum AppButtonVariant {
+  /// Filled orange background — primary CTA.
+  primary,
 
-/// A reusable button widget with primary and secondary variants.
+  /// Outlined with primary color border — secondary action.
+  secondary,
+
+  /// Outlined with red border — destructive action (e.g. Log Out).
+  danger,
+}
+
+/// A reusable button widget with primary, secondary, and danger variants.
 ///
-/// - [AppButtonVariant.primary]: filled background using [AppColors.primary]
-/// - [AppButtonVariant.secondary]: outlined border with transparent background
+/// All variants provide immediate visual ripple feedback via Material ink.
+/// (Requirements 23.1, 23.5)
 class AppButton extends StatelessWidget {
   const AppButton({
     super.key,
@@ -17,6 +28,7 @@ class AppButton extends StatelessWidget {
     this.variant = AppButtonVariant.primary,
     this.isLoading = false,
     this.width,
+    this.icon,
   });
 
   final String label;
@@ -24,55 +36,93 @@ class AppButton extends StatelessWidget {
   final AppButtonVariant variant;
   final bool isLoading;
   final double? width;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
-    final isPrimary = variant == AppButtonVariant.primary;
-
-    final child = isLoading
-        ? SizedBox(
-            height: 20,
-            width: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: isPrimary ? AppColors.textOnPrimary : AppColors.primary,
-            ),
-          )
-        : Text(
-            label,
-            style: AppTextStyles.button.copyWith(
-              color: isPrimary ? AppColors.textOnPrimary : AppColors.primary,
-            ),
-          );
-
-    final button = isPrimary
-        ? ElevatedButton(
-            onPressed: isLoading ? null : onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              disabledBackgroundColor: AppColors.disabled,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-            ),
-            child: child,
-          )
-        : OutlinedButton(
-            onPressed: isLoading ? null : onPressed,
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: AppColors.primary),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-            ),
-            child: child,
-          );
-
+    final button = _buildButton();
     if (width != null) {
       return SizedBox(width: width, child: button);
     }
     return button;
+  }
+
+  Widget _buildButton() {
+    switch (variant) {
+      case AppButtonVariant.primary:
+        return ElevatedButton(
+          onPressed: isLoading ? null : onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: AppColors.textOnPrimary,
+            disabledBackgroundColor: AppColors.disabled,
+            disabledForegroundColor: AppColors.disabledText,
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: AppRadius.smAll,
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: AppSpacing.md,
+              horizontal: AppSpacing.xl,
+            ),
+          ),
+          child: _buildChild(AppColors.textOnPrimary),
+        );
+
+      case AppButtonVariant.secondary:
+        return OutlinedButton(
+          onPressed: isLoading ? null : onPressed,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.primary,
+            side: const BorderSide(color: AppColors.primary, width: 1.5),
+            shape: const RoundedRectangleBorder(
+              borderRadius: AppRadius.smAll,
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: AppSpacing.md,
+              horizontal: AppSpacing.xl,
+            ),
+          ),
+          child: _buildChild(AppColors.primary),
+        );
+
+      case AppButtonVariant.danger:
+        return OutlinedButton(
+          onPressed: isLoading ? null : onPressed,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.error,
+            side: const BorderSide(color: AppColors.error, width: 1.5),
+            shape: const RoundedRectangleBorder(
+              borderRadius: AppRadius.smAll,
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: AppSpacing.md,
+              horizontal: AppSpacing.xl,
+            ),
+          ),
+          child: _buildChild(AppColors.error),
+        );
+    }
+  }
+
+  Widget _buildChild(Color color) {
+    if (isLoading) {
+      return SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(strokeWidth: 2, color: color),
+      );
+    }
+    if (icon != null) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18, color: color),
+          const SizedBox(width: AppSpacing.sm),
+          Text(label, style: AppTextStyles.button.copyWith(color: color)),
+        ],
+      );
+    }
+    return Text(label, style: AppTextStyles.button.copyWith(color: color));
   }
 }

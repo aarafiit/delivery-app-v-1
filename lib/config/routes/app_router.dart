@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/profile/presentation/screens/edit_profile_screen.dart';
+import '../../features/profile/presentation/screens/help_support_screen.dart';
+import '../../features/profile/presentation/screens/saved_addresses_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import 'app_routes.dart';
 
@@ -32,6 +35,21 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.home,
       name: AppRoutes.homeName,
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.editProfile,
+      name: AppRoutes.editProfileName,
+      builder: (context, state) => const EditProfileScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.savedAddresses,
+      name: AppRoutes.savedAddressesName,
+      builder: (context, state) => const SavedAddressesScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.helpSupport,
+      name: AppRoutes.helpSupportName,
+      builder: (context, state) => const HelpSupportScreen(),
     ),
   ],
   errorBuilder: (context, state) => const NotFoundScreen(),

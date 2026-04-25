@@ -8,9 +8,17 @@ class AppRoutes {
   static const String splash = '/splash';
   static const String login = '/login';
   static const String home = '/home';
+  static const String profile = '/profile';
+  static const String editProfile = '/profile/edit';
+  static const String savedAddresses = '/profile/saved-addresses';
+  static const String helpSupport = '/profile/help-support';
 
   // Named route identifiers (mirrors the path without the leading slash)
   static const String splashName = 'splash';
   static const String loginName = 'login';
   static const String homeName = 'home';
+  static const String profileName = 'profile';
+  static const String editProfileName = 'editProfile';
+  static const String savedAddressesName = 'savedAddresses';
+  static const String helpSupportName = 'helpSupport';
 }

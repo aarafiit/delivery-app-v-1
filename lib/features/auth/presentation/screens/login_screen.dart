@@ -4,13 +4,12 @@ import 'package:go_router/go_router.dart';
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_styles.dart';
+import '../../../../config/theme/app_spacing.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
 
 /// Login screen — UI only, no backend wiring.
-///
-/// Displays a phone/email field, a password field, and a login button.
-/// Backend integration will be added in a later task.
+/// (Requirements 10.2, 13.1, 13.2, 13.3, 13.4)
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -44,38 +43,70 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.xl,
+            vertical: AppSpacing.xxxl,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSpacing.xxxl),
+
+              // App logo / icon
+              Center(
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.delivery_dining_outlined,
+                    size: 44,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+
               // Title
               const Text(
                 'Welcome Back',
-                style: AppTextStyles.heading1,
+                style: AppTextStyles.displayLarge,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               const Text(
                 'Sign in to continue',
-                style: AppTextStyles.bodySecondary,
+                style: AppTextStyles.bodyMedium,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: AppSpacing.xxxl),
+
               // Phone / email field
               AppTextField(
                 label: 'Phone or Email',
                 hint: 'Enter your phone or email',
                 controller: _phoneController,
                 keyboardType: TextInputType.emailAddress,
+                prefixIcon: const Icon(
+                  Icons.person_outline,
+                  color: AppColors.textSecondary,
+                ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
+
               // Password field
               AppTextField(
                 label: 'Password',
                 hint: 'Enter your password',
                 controller: _passwordController,
                 obscureText: _obscurePassword,
+                prefixIcon: const Icon(
+                  Icons.lock_outline,
+                  color: AppColors.textSecondary,
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscurePassword
@@ -87,14 +118,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       setState(() => _obscurePassword = !_obscurePassword),
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxxl),
+
               // Login button
               AppButton(
                 label: 'Login',
                 onPressed: _onLoginPressed,
               ),
-              const SizedBox(height: 12),
-              // Guest access — no credentials required
+              const SizedBox(height: AppSpacing.md),
+
+              // Guest access
               AppButton(
                 label: 'Continue as Guest',
                 onPressed: _onContinueAsGuest,

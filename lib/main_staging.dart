@@ -6,6 +6,8 @@ import 'config/routes/app_router.dart';
 import 'config/theme/app_theme.dart';
 import 'core/network/api_client_provider.dart';
 import 'config/env/staging_config.dart';
+import 'features/profile/presentation/providers/locale_provider.dart';
+import 'features/profile/presentation/providers/theme_provider.dart';
 import 'package:delivery_app/l10n/app_localizations.dart';
 
 void main() {
@@ -19,14 +21,20 @@ void main() {
   );
 }
 
-class DeliveryApp extends StatelessWidget {
+class DeliveryApp extends ConsumerWidget {
   const DeliveryApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    final locale = ref.watch(localeProvider);
+
     return MaterialApp.router(
       title: 'Delivery App (Staging)',
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: themeMode,
+      locale: locale,
       routerConfig: appRouter,
       localizationsDelegates: const [
         AppLocalizations.delegate,

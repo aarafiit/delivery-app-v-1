@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/app_radius.dart';
 
-/// A reusable text field widget with label, hint, error state, and obscure support.
+/// A reusable text field with filled style, label, hint, and error state.
+///
+/// Uses [AppColors.surfaceVariant] fill and [AppRadius.sm] corners,
+/// consistent with the app's design system.
+/// (Requirements 21.6)
 class AppTextField extends StatelessWidget {
   const AppTextField({
     super.key,
@@ -13,7 +18,9 @@ class AppTextField extends StatelessWidget {
     this.keyboardType,
     this.onChanged,
     this.suffixIcon,
+    this.prefixIcon,
     this.enabled = true,
+    this.maxLines = 1,
   });
 
   final String label;
@@ -24,7 +31,9 @@ class AppTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
   final bool enabled;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -34,33 +43,39 @@ class AppTextField extends StatelessWidget {
       keyboardType: keyboardType,
       onChanged: onChanged,
       enabled: enabled,
+      maxLines: obscureText ? 1 : maxLines,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         errorText: errorText,
         suffixIcon: suffixIcon,
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+        prefixIcon: prefixIcon,
+        filled: true,
+        fillColor: enabled ? AppColors.surfaceVariant : AppColors.disabled.withOpacity(0.3),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: AppRadius.smAll,
+          borderSide: BorderSide.none,
         ),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          borderSide: BorderSide(color: AppColors.divider),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: AppRadius.smAll,
+          borderSide: BorderSide.none,
         ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          borderSide: BorderSide(color: AppColors.primary, width: 2),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: AppRadius.smAll,
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
-        errorBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          borderSide: BorderSide(color: AppColors.error),
+        errorBorder: OutlineInputBorder(
+          borderRadius: AppRadius.smAll,
+          borderSide: const BorderSide(color: AppColors.error),
         ),
-        focusedErrorBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          borderSide: BorderSide(color: AppColors.error, width: 2),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: AppRadius.smAll,
+          borderSide: const BorderSide(color: AppColors.error, width: 2),
         ),
-        disabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          borderSide: BorderSide(color: AppColors.disabled),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: AppRadius.smAll,
+          borderSide: BorderSide.none,
         ),
       ),
     );
