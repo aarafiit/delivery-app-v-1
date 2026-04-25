@@ -7,6 +7,7 @@ import '../../../../config/theme/app_spacing.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/section_header.dart';
 import '../../../../core/widgets/shimmer_loader_widget.dart';
+import '../../../home/presentation/providers/bottom_nav_provider.dart';
 import '../providers/banners_provider.dart';
 import '../providers/products_provider.dart';
 import '../widgets/banner_carousel.dart';
@@ -104,7 +105,8 @@ class ProductsScreen extends ConsumerWidget {
             child: SectionHeader(
               title: 'Categories',
               actionLabel: 'See All',
-              onAction: () {},
+              onAction: () =>
+                  ref.read(bottomNavIndexProvider.notifier).state = 1,
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.lg,
                 AppSpacing.lg,
