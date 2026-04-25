@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/products/presentation/screens/product_details_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../features/profile/presentation/screens/help_support_screen.dart';
 import '../../features/profile/presentation/screens/saved_addresses_screen.dart';
@@ -49,6 +50,14 @@ final GoRouter appRouter = GoRouter(
           path: 'profile/help-support',
           name: AppRoutes.helpSupportName,
           builder: (context, state) => const HelpSupportScreen(),
+        ),
+        GoRoute(
+          path: 'product/:id',
+          name: AppRoutes.productDetailsName,
+          builder: (context, state) {
+            final id = int.parse(state.pathParameters['id']!);
+            return ProductDetailsScreen(productId: id);
+          },
         ),
       ],
     ),

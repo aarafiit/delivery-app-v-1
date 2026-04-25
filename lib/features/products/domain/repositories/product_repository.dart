@@ -7,4 +7,5 @@ import '../entities/product_entity.dart';
 /// (Requirements 24.6)
 abstract interface class ProductRepository {
   Future<Either<Failure, List<ProductEntity>>> getProducts();
+  Future<Either<Failure, ProductEntity>> getProductById(int id);
 }

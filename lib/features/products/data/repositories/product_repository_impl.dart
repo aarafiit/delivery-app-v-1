@@ -52,4 +52,26 @@ class ProductRepositoryImpl implements ProductRepository {
       return const Left(NetworkFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, ProductEntity>> getProductById(int id) async {
+    try {
+      final model = await _remoteDataSource.getProductById(id);
+      final entity = model.toEntity();
+      return Right(ProductEntity(
+        id: entity.id,
+        categoryId: entity.categoryId,
+        name: entity.name,
+        description: entity.description,
+        price: entity.price,
+        discountPrice: entity.discountPrice,
+        imageUrl: _rewriteMediaUrl(entity.imageUrl),
+        isAvailable: entity.isAvailable,
+      ));
+    } on ApiException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (_) {
+      return const Left(NetworkFailure());
+    }
+  }
 }

@@ -21,4 +21,5 @@ class AppRoutes {
   static const String editProfileName = 'editProfile';
   static const String savedAddressesName = 'savedAddresses';
   static const String helpSupportName = 'helpSupport';
+  static const String productDetailsName = 'productDetails';
 }

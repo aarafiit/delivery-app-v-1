@@ -175,6 +175,7 @@ class ProductsScreen extends ConsumerWidget {
                             price: product.price,
                             discountPrice: product.discountPrice,
                             imageUrl: product.imageUrl,
+                            productId: product.id,
                           );
                         },
                         childCount: products.length,

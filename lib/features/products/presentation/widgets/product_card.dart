@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../config/routes/app_routes.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_styles.dart';
 import '../../../../config/theme/app_radius.dart';
@@ -16,12 +18,14 @@ class ProductCard extends StatelessWidget {
     required this.price,
     required this.imageUrl,
     this.discountPrice,
+    this.productId,
   });
 
   final String name;
   final double price;
   final String imageUrl;
   final double? discountPrice;
+  final int? productId;
 
   bool get _hasDiscount =>
       discountPrice != null && discountPrice! < price;
@@ -31,7 +35,14 @@ class ProductCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          if (productId != null) {
+            context.pushNamed(
+              AppRoutes.productDetailsName,
+              pathParameters: {'id': '$productId'},
+            );
+          }
+        },
         borderRadius: AppRadius.mdAll,
         child: Container(
           decoration: BoxDecoration(
