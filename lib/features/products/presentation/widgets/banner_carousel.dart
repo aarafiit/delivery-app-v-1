@@ -1,22 +1,26 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../../core/constants/mock_data.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_radius.dart';
 import '../../../../config/theme/app_spacing.dart';
+import '../../../../core/widgets/shimmer_loader_widget.dart';
 
 /// Horizontally scrollable banner carousel with auto-scroll and dot indicators.
-/// Uses mock banner image URLs from [MockData.bannerImages].
+///
+/// Accepts [imageUrls] so it can display banners from any source
+/// (MinIO, CDN, mock data, etc.) without being coupled to a specific provider.
 /// (Requirements 15.2)
 class BannerCarousel extends StatefulWidget {
-  const BannerCarousel({super.key});
+  const BannerCarousel({super.key, required this.imageUrls});
+
+  final List<String> imageUrls;
 
   @override
   State<BannerCarousel> createState() => _BannerCarouselState();
 }
 
 class _BannerCarouselState extends State<BannerCarousel> {
-  final PageController _controller = PageController();
+  late final PageController _controller;
   int _currentIndex = 0;
   Timer? _timer;
 
@@ -26,13 +30,14 @@ class _BannerCarouselState extends State<BannerCarousel> {
   @override
   void initState() {
     super.initState();
-    _startAutoScroll();
+    _controller = PageController();
+    if (widget.imageUrls.length > 1) _startAutoScroll();
   }
 
   void _startAutoScroll() {
     _timer = Timer.periodic(_autoScrollDuration, (_) {
       if (!mounted) return;
-      final next = (_currentIndex + 1) % MockData.bannerImages.length;
+      final next = (_currentIndex + 1) % widget.imageUrls.length;
       _controller.animateToPage(
         next,
         duration: _animationDuration,
@@ -50,7 +55,10 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final banners = MockData.bannerImages;
+    final banners = widget.imageUrls;
+
+    if (banners.isEmpty) return const SizedBox.shrink();
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -71,6 +79,10 @@ class _BannerCarouselState extends State<BannerCarousel> {
                       Image.network(
                         banners[index],
                         fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const ShimmerBannerLoader();
+                        },
                         errorBuilder: (_, __, ___) => Container(
                           decoration: const BoxDecoration(
                             gradient: LinearGradient(

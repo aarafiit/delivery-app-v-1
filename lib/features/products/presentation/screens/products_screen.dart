@@ -1,30 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_styles.dart';
 import '../../../../config/theme/app_spacing.dart';
-import '../../../../core/constants/mock_data.dart';
+import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/section_header.dart';
+import '../../../../core/widgets/shimmer_loader_widget.dart';
+import '../providers/banners_provider.dart';
+import '../providers/products_provider.dart';
 import '../widgets/banner_carousel.dart';
 import '../widgets/category_list.dart';
 import '../widgets/product_card.dart';
 
 /// Products tab — main discovery screen.
 ///
-/// Displays:
-/// - Pinned SliverAppBar with location label and profile icon (Requirements 15.1)
-/// - BannerCarousel with mock banners (Requirements 15.2)
-/// - CategoryList with mock categories (Requirements 15.3)
-/// - GridView of ProductCards with mock products (Requirements 15.4, 15.5, 15.6)
-class ProductsScreen extends StatelessWidget {
+/// Fetches products from the API via [productsProvider] and displays:
+/// - Shimmer skeleton while loading (Requirements 24.2)
+/// - Product grid on success, filtered to available products (Requirements 24.3)
+/// - Error empty state on failure (Requirements 24.4)
+class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});
 
+  Future<void> _onRefresh(WidgetRef ref) async {
+    // Invalidate and wait for the new data to arrive
+    ref.invalidate(productsProvider);
+    await ref.read(productsProvider.future);
+  }
+
   @override
-  Widget build(BuildContext context) {
-    final products = MockData.products;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final productsAsync = ref.watch(productsProvider);
+    final bannerUrls = ref.watch(bannersProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: CustomScrollView(
+      body: RefreshIndicator(
+        color: AppColors.primary,
+        onRefresh: () => _onRefresh(ref),
+        child: CustomScrollView(
+          // Always scrollable so pull-to-refresh works even when content is short
+          physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           // ── Pinned AppBar ──────────────────────────────────────────────
           SliverAppBar(
@@ -73,13 +89,13 @@ class ProductsScreen extends StatelessWidget {
           ),
 
           // ── Banner Carousel ────────────────────────────────────────────
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 top: AppSpacing.lg,
                 bottom: AppSpacing.sm,
               ),
-              child: BannerCarousel(),
+              child: BannerCarousel(imageUrls: bannerUrls),
             ),
           ),
 
@@ -99,7 +115,7 @@ class ProductsScreen extends StatelessWidget {
           ),
           const SliverToBoxAdapter(child: CategoryList()),
 
-          // ── Popular Products ──────────────────────────────────────────
+          // ── Popular Products header ────────────────────────────────────
           SliverToBoxAdapter(
             child: SectionHeader(
               title: 'Popular Products',
@@ -114,35 +130,67 @@ class ProductsScreen extends StatelessWidget {
             ),
           ),
 
-          // ── Product Grid ──────────────────────────────────────────────
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.lg,
-              AppSpacing.sm,
-              AppSpacing.lg,
-              AppSpacing.xxxl,
-            ),
-            sliver: SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final product = products[index];
-                  return ProductCard(
-                    name: product['name'] as String,
-                    price: (product['price'] as num).toDouble(),
-                    imageUrl: product['image'] as String,
-                  );
-                },
-                childCount: products.length,
-              ),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: AppSpacing.sm,
-                mainAxisSpacing: AppSpacing.sm,
-                childAspectRatio: 0.75,
+          // ── Product Grid — switches on AsyncValue ─────────────────────
+          productsAsync.when(
+            loading: () => const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                child: ShimmerCardLoader(itemCount: 6),
               ),
             ),
+            error: (error, _) => SliverFillRemaining(
+              hasScrollBody: false,
+              child: EmptyStateWidget(
+                icon: Icons.wifi_off_outlined,
+                heading: 'Could not load products',
+                subtext: error is Exception
+                    ? error.toString().replaceFirst('Exception: ', '')
+                    : 'Something went wrong. Please try again.',
+                actionLabel: 'Retry',
+                onAction: () => ref.invalidate(productsProvider),
+              ),
+            ),
+            data: (products) => products.isEmpty
+                ? const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: EmptyStateWidget(
+                      icon: Icons.storefront_outlined,
+                      heading: 'No products available',
+                      subtext: 'Check back soon for new items.',
+                    ),
+                  )
+                : SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.sm,
+                      AppSpacing.lg,
+                      AppSpacing.xxxl,
+                    ),
+                    sliver: SliverGrid(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final product = products[index];
+                          return ProductCard(
+                            name: product.name,
+                            price: product.price,
+                            discountPrice: product.discountPrice,
+                            imageUrl: product.imageUrl,
+                          );
+                        },
+                        childCount: products.length,
+                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: AppSpacing.sm,
+                        mainAxisSpacing: AppSpacing.sm,
+                        childAspectRatio: 0.75,
+                      ),
+                    ),
+                  ),
           ),
         ],
+      ),
       ),
     );
   }

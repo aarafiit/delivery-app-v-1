@@ -9,4 +9,7 @@ class ProdConfig implements EnvConfig {
 
   @override
   String get envName => 'prod';
+
+  @override
+  String get mediaBaseUrl => 'https://media.deliveryapp.com';
 }

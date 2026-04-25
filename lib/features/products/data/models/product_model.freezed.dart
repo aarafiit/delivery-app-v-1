@@ -1,0 +1,273 @@
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'product_model.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+
+ProductModel _$ProductModelFromJson(Map<String, dynamic> json) {
+  return _ProductModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ProductModel {
+  int get id => throw _privateConstructorUsedError;
+  int get categoryId => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
+  double get price => throw _privateConstructorUsedError;
+  double get discountPrice => throw _privateConstructorUsedError;
+  String get imageUrl => throw _privateConstructorUsedError;
+  bool get isAvailable => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $ProductModelCopyWith<ProductModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ProductModelCopyWith<$Res> {
+  factory $ProductModelCopyWith(
+          ProductModel value, $Res Function(ProductModel) then) =
+      _$ProductModelCopyWithImpl<$Res, ProductModel>;
+  @useResult
+  $Res call(
+      {int id,
+      int categoryId,
+      String name,
+      String description,
+      double price,
+      double discountPrice,
+      String imageUrl,
+      bool isAvailable});
+}
+
+/// @nodoc
+class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
+    implements $ProductModelCopyWith<$Res> {
+  _$ProductModelCopyWithImpl(this._value, this._then);
+
+  final $Val _value;
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? categoryId = null,
+    Object? name = null,
+    Object? description = null,
+    Object? price = null,
+    Object? discountPrice = null,
+    Object? imageUrl = null,
+    Object? isAvailable = null,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id as int,
+      categoryId: null == categoryId
+          ? _value.categoryId
+          : categoryId as int,
+      name: null == name
+          ? _value.name
+          : name as String,
+      description: null == description
+          ? _value.description
+          : description as String,
+      price: null == price
+          ? _value.price
+          : price as double,
+      discountPrice: null == discountPrice
+          ? _value.discountPrice
+          : discountPrice as double,
+      imageUrl: null == imageUrl
+          ? _value.imageUrl
+          : imageUrl as String,
+      isAvailable: null == isAvailable
+          ? _value.isAvailable
+          : isAvailable as bool,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$ProductModelImplCopyWith<$Res>
+    implements $ProductModelCopyWith<$Res> {
+  factory _$$ProductModelImplCopyWith(
+          _$ProductModelImpl value, $Res Function(_$ProductModelImpl) then) =
+      __$$ProductModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      int categoryId,
+      String name,
+      String description,
+      double price,
+      double discountPrice,
+      String imageUrl,
+      bool isAvailable});
+}
+
+/// @nodoc
+class __$$ProductModelImplCopyWithImpl<$Res>
+    extends _$ProductModelCopyWithImpl<$Res, _$ProductModelImpl>
+    implements _$$ProductModelImplCopyWith<$Res> {
+  __$$ProductModelImplCopyWithImpl(
+      _$ProductModelImpl _value, $Res Function(_$ProductModelImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? categoryId = null,
+    Object? name = null,
+    Object? description = null,
+    Object? price = null,
+    Object? discountPrice = null,
+    Object? imageUrl = null,
+    Object? isAvailable = null,
+  }) {
+    return _then(_$ProductModelImpl(
+      id: null == id ? _value.id : id as int,
+      categoryId: null == categoryId ? _value.categoryId : categoryId as int,
+      name: null == name ? _value.name : name as String,
+      description:
+          null == description ? _value.description : description as String,
+      price: null == price ? _value.price : price as double,
+      discountPrice: null == discountPrice
+          ? _value.discountPrice
+          : discountPrice as double,
+      imageUrl: null == imageUrl ? _value.imageUrl : imageUrl as String,
+      isAvailable:
+          null == isAvailable ? _value.isAvailable : isAvailable as bool,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ProductModelImpl extends _ProductModel {
+  const _$ProductModelImpl(
+      {required this.id,
+      required this.categoryId,
+      required this.name,
+      required this.description,
+      required this.price,
+      required this.discountPrice,
+      required this.imageUrl,
+      required this.isAvailable})
+      : super._();
+
+  factory _$ProductModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ProductModelImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final int categoryId;
+  @override
+  final String name;
+  @override
+  final String description;
+  @override
+  final double price;
+  @override
+  final double discountPrice;
+  @override
+  final String imageUrl;
+  @override
+  final bool isAvailable;
+
+  @override
+  String toString() {
+    return 'ProductModel(id: $id, categoryId: $categoryId, name: $name, description: $description, price: $price, discountPrice: $discountPrice, imageUrl: $imageUrl, isAvailable: $isAvailable)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ProductModelImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.categoryId, categoryId) ||
+                other.categoryId == categoryId) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.price, price) || other.price == price) &&
+            (identical(other.discountPrice, discountPrice) ||
+                other.discountPrice == discountPrice) &&
+            (identical(other.imageUrl, imageUrl) ||
+                other.imageUrl == imageUrl) &&
+            (identical(other.isAvailable, isAvailable) ||
+                other.isAvailable == isAvailable));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, categoryId, name,
+      description, price, discountPrice, imageUrl, isAvailable);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ProductModelImplCopyWith<_$ProductModelImpl> get copyWith =>
+      __$$ProductModelImplCopyWithImpl<_$ProductModelImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ProductModelImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _ProductModel extends ProductModel {
+  const factory _ProductModel(
+      {required final int id,
+      required final int categoryId,
+      required final String name,
+      required final String description,
+      required final double price,
+      required final double discountPrice,
+      required final String imageUrl,
+      required final bool isAvailable}) = _$ProductModelImpl;
+  const _ProductModel._() : super._();
+
+  factory _ProductModel.fromJson(Map<String, dynamic> json) =
+      _$ProductModelImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  int get categoryId;
+  @override
+  String get name;
+  @override
+  String get description;
+  @override
+  double get price;
+  @override
+  double get discountPrice;
+  @override
+  String get imageUrl;
+  @override
+  bool get isAvailable;
+  @override
+  @JsonKey(ignore: true)
+  _$$ProductModelImplCopyWith<_$ProductModelImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

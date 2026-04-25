@@ -9,4 +9,7 @@ class StagingConfig implements EnvConfig {
 
   @override
   String get envName => 'staging';
+
+  @override
+  String get mediaBaseUrl => 'https://media-staging.deliveryapp.com';
 }

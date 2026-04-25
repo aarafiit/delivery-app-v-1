@@ -6,4 +6,8 @@ abstract class EnvConfig {
 
   /// Human-readable environment name (e.g. "dev", "staging", "prod").
   String get envName;
+
+  /// Base URL for media/storage assets (MinIO, S3, etc.).
+  /// Used to rewrite localhost URLs returned by the API when running on a device.
+  String get mediaBaseUrl;
 }

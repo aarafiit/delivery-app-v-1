@@ -1,3 +1,4 @@
+import 'package:delivery_app/config/env/dev_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +15,7 @@ void main() {
   runApp(
     ProviderScope(
       overrides: [
-        envConfigProvider.overrideWithValue(const ProdConfig()),
+        envConfigProvider.overrideWithValue(const DevConfig()),
       ],
       child: const DeliveryApp(),
     ),

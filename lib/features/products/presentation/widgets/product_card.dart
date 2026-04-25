@@ -4,21 +4,27 @@ import '../../../../config/theme/app_text_styles.dart';
 import '../../../../config/theme/app_radius.dart';
 import '../../../../config/theme/app_shadows.dart';
 import '../../../../config/theme/app_spacing.dart';
+import '../../../../core/widgets/shimmer_loader_widget.dart';
 
-/// Card widget displaying a product's image, name, and price.
-/// Uses AppCard-style decoration with rounded corners and soft shadow.
-/// (Requirements 15.4, 22.5)
+/// Card widget displaying a product's image, name, price, and optional discount.
+/// Uses NetworkImage with shimmer loading placeholder and error fallback.
+/// (Requirements 15.4, 24.8)
 class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
     required this.name,
     required this.price,
     required this.imageUrl,
+    this.discountPrice,
   });
 
   final String name;
   final double price;
   final String imageUrl;
+  final double? discountPrice;
+
+  bool get _hasDiscount =>
+      discountPrice != null && discountPrice! < price;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +42,7 @@ class ProductCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Product image
+              // Product image with shimmer loading placeholder
               Expanded(
                 child: ClipRRect(
                   borderRadius: const BorderRadius.vertical(
@@ -46,6 +52,14 @@ class ProductCard extends StatelessWidget {
                     imageUrl,
                     width: double.infinity,
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return ShimmerLoaderWidget(
+                        width: double.infinity,
+                        height: double.infinity,
+                        borderRadius: BorderRadius.zero,
+                      );
+                    },
                     errorBuilder: (_, __, ___) => Container(
                       color: AppColors.surfaceVariant,
                       child: const Center(
@@ -77,9 +91,22 @@ class ProductCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '৳${price.toStringAsFixed(0)}',
-                          style: AppTextStyles.price.copyWith(fontSize: 15),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (_hasDiscount)
+                              Text(
+                                '৳${price.toStringAsFixed(0)}',
+                                style: AppTextStyles.caption.copyWith(
+                                  color: AppColors.textHint,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                            Text(
+                              '৳${(_hasDiscount ? discountPrice! : price).toStringAsFixed(0)}',
+                              style: AppTextStyles.price.copyWith(fontSize: 15),
+                            ),
+                          ],
                         ),
                         Container(
                           decoration: const BoxDecoration(
