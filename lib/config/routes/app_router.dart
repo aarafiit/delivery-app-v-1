@@ -11,15 +11,12 @@ import 'app_routes.dart';
 
 /// Application router.
 ///
-/// Defines all named routes and a redirect guard stub.
-/// The guard always returns `null` (no redirect) for now; authentication
-/// checks will be wired in once the auth feature is complete.
+/// Profile sub-screens (Edit, Addresses, Help) are nested under /home so that
+/// GoRouter maintains a proper navigation stack and the device back button
+/// returns to the previous screen instead of exiting the app.
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
-  redirect: (BuildContext context, GoRouterState state) {
-    // Auth guard stub — always returns null (no redirect) for now.
-    return null;
-  },
+  redirect: (BuildContext context, GoRouterState state) => null,
   routes: [
     GoRoute(
       path: AppRoutes.splash,
@@ -31,35 +28,38 @@ final GoRouter appRouter = GoRouter(
       name: AppRoutes.loginName,
       builder: (context, state) => const LoginScreen(),
     ),
+    // /home is the shell — sub-routes are pushed on top of it so the
+    // back button correctly pops back to HomeScreen (Account tab).
     GoRoute(
       path: AppRoutes.home,
       name: AppRoutes.homeName,
       builder: (context, state) => const HomeScreen(),
-    ),
-    GoRoute(
-      path: AppRoutes.editProfile,
-      name: AppRoutes.editProfileName,
-      builder: (context, state) => const EditProfileScreen(),
-    ),
-    GoRoute(
-      path: AppRoutes.savedAddresses,
-      name: AppRoutes.savedAddressesName,
-      builder: (context, state) => const SavedAddressesScreen(),
-    ),
-    GoRoute(
-      path: AppRoutes.helpSupport,
-      name: AppRoutes.helpSupportName,
-      builder: (context, state) => const HelpSupportScreen(),
+      routes: [
+        GoRoute(
+          path: 'profile/edit',
+          name: AppRoutes.editProfileName,
+          builder: (context, state) => const EditProfileScreen(),
+        ),
+        GoRoute(
+          path: 'profile/saved-addresses',
+          name: AppRoutes.savedAddressesName,
+          builder: (context, state) => const SavedAddressesScreen(),
+        ),
+        GoRoute(
+          path: 'profile/help-support',
+          name: AppRoutes.helpSupportName,
+          builder: (context, state) => const HelpSupportScreen(),
+        ),
+      ],
     ),
   ],
   errorBuilder: (context, state) => const NotFoundScreen(),
 );
 
 // ---------------------------------------------------------------------------
-// 404 / fallback screen (Requirements 4.4)
+// 404 / fallback screen
 // ---------------------------------------------------------------------------
 
-/// Displayed when an unknown route is accessed.
 class NotFoundScreen extends StatelessWidget {
   const NotFoundScreen({super.key});
 

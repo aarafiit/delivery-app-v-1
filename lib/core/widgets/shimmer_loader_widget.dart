@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_radius.dart';
 import '../../config/theme/app_spacing.dart';
 

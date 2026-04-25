@@ -48,7 +48,7 @@ class AccountScreen extends ConsumerWidget {
           ProfileHeaderWidget(
             name: name,
             phone: phone,
-            onEditPressed: () => context.goNamed(AppRoutes.editProfileName),
+            onEditPressed: () => context.pushNamed(AppRoutes.editProfileName),
           ),
 
           const SizedBox(height: AppSpacing.lg),
@@ -97,7 +97,7 @@ class AccountScreen extends ConsumerWidget {
                   Icons.chevron_right,
                   color: AppColors.textSecondary,
                 ),
-                onTap: () => context.goNamed(AppRoutes.savedAddressesName),
+                onTap: () => context.pushNamed(AppRoutes.savedAddressesName),
               ),
             ],
           ),
@@ -115,7 +115,7 @@ class AccountScreen extends ConsumerWidget {
                   Icons.chevron_right,
                   color: AppColors.textSecondary,
                 ),
-                onTap: () => context.goNamed(AppRoutes.helpSupportName),
+                onTap: () => context.pushNamed(AppRoutes.helpSupportName),
               ),
             ],
           ),
