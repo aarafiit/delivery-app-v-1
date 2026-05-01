@@ -11,5 +11,79 @@
   "loginButton": "Login",
   "@loginButton": {
     "description": "Label for the login button"
+  },
+  "authGatewayTitle": "Delicious food, groceries & essentials delivered fast",
+  "@authGatewayTitle": {
+    "description": "Title shown on the auth gateway screen"
+  },
+  "continueWithPhone": "Continue with Phone",
+  "@continueWithPhone": {
+    "description": "Button label to continue with phone authentication"
+  },
+  "continueAsGuest": "Continue as Guest",
+  "@continueAsGuest": {
+    "description": "Button label to continue as guest without authentication"
+  },
+  "phoneLoginTitle": "Sign in with your mobile number",
+  "@phoneLoginTitle": {
+    "description": "Title shown on the phone login screen"
+  },
+  "phoneInputHint": "Phone Number",
+  "@phoneInputHint": {
+    "description": "Hint text for phone number input field"
+  },
+  "otpVerificationTitle": "Enter the 6-digit code",
+  "@otpVerificationTitle": {
+    "description": "Title shown on the OTP verification screen"
+  },
+  "otpVerificationSubtitle": "sent to {phoneNumber}",
+  "@otpVerificationSubtitle": {
+    "description": "Subtitle showing the phone number where OTP was sent",
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String",
+        "example": "+880 1700-000000"
+      }
+    }
+  },
+  "resendOtp": "Resend OTP",
+  "@resendOtp": {
+    "description": "Button label to resend OTP code"
+  },
+  "changeNumber": "Change Number",
+  "@changeNumber": {
+    "description": "Link text to go back and change phone number"
+  },
+  "verify": "Verify",
+  "@verify": {
+    "description": "Button label to verify OTP code"
+  },
+  "invalidPhoneNumber": "Please enter a valid phone number",
+  "@invalidPhoneNumber": {
+    "description": "Error message for invalid phone number"
+  },
+  "invalidOtp": "Invalid OTP code. Please try again.",
+  "@invalidOtp": {
+    "description": "Error message for invalid OTP code"
+  },
+  "otpSentSuccess": "OTP sent successfully",
+  "@otpSentSuccess": {
+    "description": "Success message when OTP is sent"
+  },
+  "logoutConfirmTitle": "Logout",
+  "@logoutConfirmTitle": {
+    "description": "Title for logout confirmation dialog"
+  },
+  "logoutConfirmMessage": "Are you sure you want to logout?",
+  "@logoutConfirmMessage": {
+    "description": "Message for logout confirmation dialog"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Button label to cancel an action"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Button label to logout"
   }
 }

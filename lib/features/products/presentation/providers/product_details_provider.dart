@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/product_entity.dart';
 import '../../domain/usecases/get_product_details_use_case.dart';
-import '../../../auth/domain/usecases/base_use_case.dart';
 import 'products_provider.dart';
 
 /// Provider for [GetProductDetailsUseCase].

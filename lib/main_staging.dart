@@ -28,6 +28,7 @@ class DeliveryApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
+    final router = createAppRouter(ref);
 
     return MaterialApp.router(
       title: 'Delivery App (Staging)',
@@ -35,7 +36,7 @@ class DeliveryApp extends ConsumerWidget {
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
       locale: locale,
-      routerConfig: appRouter,
+      routerConfig: router,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

@@ -7,6 +7,9 @@ class AppRoutes {
   // Paths
   static const String splash = '/splash';
   static const String login = '/login';
+  static const String authGateway = '/auth-gateway';
+  static const String phoneLogin = '/phone-login';
+  static const String otpVerification = '/otp-verification';
   static const String home = '/home';
   static const String profile = '/profile';
   static const String editProfile = '/profile/edit';
@@ -16,10 +19,15 @@ class AppRoutes {
   // Named route identifiers (mirrors the path without the leading slash)
   static const String splashName = 'splash';
   static const String loginName = 'login';
+  static const String authGatewayName = 'authGateway';
+  static const String phoneLoginName = 'phoneLogin';
+  static const String otpVerificationName = 'otpVerification';
   static const String homeName = 'home';
   static const String profileName = 'profile';
   static const String editProfileName = 'editProfile';
   static const String savedAddressesName = 'savedAddresses';
   static const String helpSupportName = 'helpSupport';
   static const String productDetailsName = 'productDetails';
+  static const String cartDetailName = 'cartDetail';
+  static const String checkoutName = 'checkout';
 }

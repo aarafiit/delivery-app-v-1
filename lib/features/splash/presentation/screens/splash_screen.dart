@@ -1,33 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_styles.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 
 /// Splash screen displayed on app launch.
 ///
-/// Shows the app logo and name, then navigates to the Login screen
-/// after a 2-second delay. (Requirements 10.1, 10.4)
-class SplashScreen extends StatefulWidget {
+/// Shows the app logo and name, then checks authentication state and navigates
+/// to either Home (if authenticated) or Auth Gateway (if not authenticated).
+/// Requirements: 10.1, 10.4, 31.6
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToLogin();
+    _navigate();
   }
 
-  Future<void> _navigateToLogin() async {
+  Future<void> _navigate() async {
     await Future.delayed(const Duration(seconds: 2));
-    if (mounted) {
-      context.goNamed(AppRoutes.loginName);
-    }
+    
+    if (!mounted) return;
+    
+    // Check authentication state
+    final authState = ref.read(authProvider);
+    
+    authState.when(
+      data: (state) {
+        if (state.isAuthenticated) {
+          // Navigate to Home if authenticated
+          context.goNamed(AppRoutes.homeName);
+        } else {
+          // Navigate to Auth Gateway if not authenticated
+          context.goNamed(AppRoutes.authGatewayName);
+        }
+      },
+      loading: () {
+        // Navigate to Auth Gateway while loading
+        context.goNamed(AppRoutes.authGatewayName);
+      },
+      error: (_, __) {
+        // Navigate to Auth Gateway on error
+        context.goNamed(AppRoutes.authGatewayName);
+      },
+    );
   }
 
   @override

@@ -9,6 +9,8 @@ import '../../../../config/theme/app_spacing.dart';
 import '../../../../config/theme/app_radius.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_dialog.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 import '../providers/locale_provider.dart';
 import '../providers/profile_provider.dart';
 import '../providers/theme_provider.dart';
@@ -131,11 +133,16 @@ class AccountScreen extends ConsumerWidget {
                   horizontal: AppSpacing.lg,
                   vertical: AppSpacing.md,
                 ),
-                child: AppButton(
-                  label: 'Log Out',
-                  variant: AppButtonVariant.danger,
-                  onPressed: () => _onLogOutPressed(context),
-                  icon: Icons.logout_outlined,
+                child: Builder(
+                  builder: (context) {
+                    final l10n = AppLocalizations.of(context);
+                    return AppButton(
+                      label: l10n.logout,
+                      variant: AppButtonVariant.danger,
+                      onPressed: () => _onLogOutPressed(context, ref),
+                      icon: Icons.logout_outlined,
+                    );
+                  }
                 ),
               ),
             ],
@@ -156,16 +163,41 @@ class AccountScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _onLogOutPressed(BuildContext context) async {
+  Future<void> _onLogOutPressed(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    
+    // Requirement 35.2: Display confirmation dialog
     final confirmed = await AppDialog.showConfirmDialog(
       context: context,
-      title: 'Log Out',
-      message: 'Are you sure you want to log out?',
-      confirmLabel: 'Log Out',
-      cancelLabel: 'Cancel',
+      title: l10n.logoutConfirmTitle,
+      message: l10n.logoutConfirmMessage,
+      confirmLabel: l10n.logout,
+      cancelLabel: l10n.cancel,
     );
-    if (confirmed && context.mounted) {
-      context.goNamed(AppRoutes.loginName);
+    
+    // Requirement 35.7: User can cancel logout
+    if (!confirmed) return;
+    
+    if (context.mounted) {
+      try {
+        // Requirements 35.3, 35.4, 35.5: Call authProvider.logout to clear auth data
+        await ref.read(authProvider.notifier).logout();
+        
+        if (context.mounted) {
+          // Requirement 35.6: Navigate to authGateway after successful logout
+          context.goNamed(AppRoutes.authGatewayName);
+        }
+      } catch (e) {
+        // Handle logout errors
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to log out: ${e.toString()}'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
     }
   }
 }

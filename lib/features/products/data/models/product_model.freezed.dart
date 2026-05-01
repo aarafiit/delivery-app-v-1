@@ -57,7 +57,9 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
     implements $ProductModelCopyWith<$Res> {
   _$ProductModelCopyWithImpl(this._value, this._then);
 
+  // ignore: unused_field
   final $Val _value;
+  // ignore: unused_field
   final $Res Function($Val) _then;
 
   @pragma('vm:prefer-inline')
@@ -75,28 +77,36 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
-          : id as int,
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       categoryId: null == categoryId
           ? _value.categoryId
-          : categoryId as int,
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
-          : name as String,
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       description: null == description
           ? _value.description
-          : description as String,
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
       price: null == price
           ? _value.price
-          : price as double,
+          : price // ignore: cast_nullable_to_non_nullable
+              as double,
       discountPrice: null == discountPrice
           ? _value.discountPrice
-          : discountPrice as double,
+          : discountPrice // ignore: cast_nullable_to_non_nullable
+              as double,
       imageUrl: null == imageUrl
           ? _value.imageUrl
-          : imageUrl as String,
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String,
       isAvailable: null == isAvailable
           ? _value.isAvailable
-          : isAvailable as bool,
+          : isAvailable // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -141,18 +151,38 @@ class __$$ProductModelImplCopyWithImpl<$Res>
     Object? isAvailable = null,
   }) {
     return _then(_$ProductModelImpl(
-      id: null == id ? _value.id : id as int,
-      categoryId: null == categoryId ? _value.categoryId : categoryId as int,
-      name: null == name ? _value.name : name as String,
-      description:
-          null == description ? _value.description : description as String,
-      price: null == price ? _value.price : price as double,
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      categoryId: null == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      price: null == price
+          ? _value.price
+          : price // ignore: cast_nullable_to_non_nullable
+              as double,
       discountPrice: null == discountPrice
           ? _value.discountPrice
-          : discountPrice as double,
-      imageUrl: null == imageUrl ? _value.imageUrl : imageUrl as String,
-      isAvailable:
-          null == isAvailable ? _value.isAvailable : isAvailable as bool,
+          : discountPrice // ignore: cast_nullable_to_non_nullable
+              as double,
+      imageUrl: null == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      isAvailable: null == isAvailable
+          ? _value.isAvailable
+          : isAvailable // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }

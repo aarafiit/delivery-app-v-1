@@ -9,10 +9,10 @@ class DevConfig implements EnvConfig {
   // Emulator: swap back to http://10.0.2.2:8080
   // Home IP : 192.168.0.102
   // Mobile Net IP :  172.19.59.194
-  String get baseUrl => 'http://192.168.0.102:8080';
+  String get baseUrl => 'http://192.168.0.103:8080';
 
   @override
-  String get mediaBaseUrl => 'http://192.168.0.102:9000';
+  String get mediaBaseUrl => 'http://192.168.0.103:9000';
 
   @override
   String get envName => 'dev';

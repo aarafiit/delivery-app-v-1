@@ -66,4 +66,20 @@ class AppColors {
   static const Color navBackground = Color(0xFFFFFFFF);
   static const Color navSelected = Color(0xFFFF6B35);
   static const Color navUnselected = Color(0xFF9CA3AF);
+
+  // ── Auth Screens ──────────────────────────────────────────────────────────
+  /// Pink vibrant — auth primary CTA buttons
+  static const Color authPrimary = Color(0xFFFF006B);
+
+  /// Soft lavender — auth gradient background start
+  static const Color authGradientStart = Color(0xFFE6E6FA);
+
+  /// Plum — auth gradient background end
+  static const Color authGradientEnd = Color(0xFFDDA0DD);
+
+  /// Pure white — auth card background
+  static const Color authCardBackground = Color(0xFFFFFFFF);
+
+  /// Light grey — auth input field fill
+  static const Color authInputFill = Color(0xFFF8F9FA);
 }

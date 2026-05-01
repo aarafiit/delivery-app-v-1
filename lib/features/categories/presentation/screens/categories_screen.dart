@@ -299,6 +299,7 @@ class _ProductGrid extends ConsumerWidget {
               discountPrice: p.discountPrice,
               imageUrl: p.imageUrl,
               productId: p.id,
+              product: p,
             );
           },
         );

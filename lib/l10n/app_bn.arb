@@ -11,5 +11,79 @@
   "loginButton": "লগইন",
   "@loginButton": {
     "description": "Label for the login button"
+  },
+  "authGatewayTitle": "সুস্বাদু খাবার, মুদি ও প্রয়োজনীয় জিনিস দ্রুত ডেলিভারি",
+  "@authGatewayTitle": {
+    "description": "Title shown on the auth gateway screen"
+  },
+  "continueWithPhone": "ফোন দিয়ে চালিয়ে যান",
+  "@continueWithPhone": {
+    "description": "Button label to continue with phone authentication"
+  },
+  "continueAsGuest": "অতিথি হিসেবে চালিয়ে যান",
+  "@continueAsGuest": {
+    "description": "Button label to continue as guest without authentication"
+  },
+  "phoneLoginTitle": "আপনার মোবাইল নম্বর দিয়ে সাইন ইন করুন",
+  "@phoneLoginTitle": {
+    "description": "Title shown on the phone login screen"
+  },
+  "phoneInputHint": "ফোন নম্বর",
+  "@phoneInputHint": {
+    "description": "Hint text for phone number input field"
+  },
+  "otpVerificationTitle": "৬-সংখ্যার কোড লিখুন",
+  "@otpVerificationTitle": {
+    "description": "Title shown on the OTP verification screen"
+  },
+  "otpVerificationSubtitle": "{phoneNumber} এ পাঠানো হয়েছে",
+  "@otpVerificationSubtitle": {
+    "description": "Subtitle showing the phone number where OTP was sent",
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String",
+        "example": "+880 1700-000000"
+      }
+    }
+  },
+  "resendOtp": "OTP পুনরায় পাঠান",
+  "@resendOtp": {
+    "description": "Button label to resend OTP code"
+  },
+  "changeNumber": "নম্বর পরিবর্তন করুন",
+  "@changeNumber": {
+    "description": "Link text to go back and change phone number"
+  },
+  "verify": "যাচাই করুন",
+  "@verify": {
+    "description": "Button label to verify OTP code"
+  },
+  "invalidPhoneNumber": "অনুগ্রহ করে একটি বৈধ ফোন নম্বর লিখুন",
+  "@invalidPhoneNumber": {
+    "description": "Error message for invalid phone number"
+  },
+  "invalidOtp": "ভুল OTP কোড। আবার চেষ্টা করুন।",
+  "@invalidOtp": {
+    "description": "Error message for invalid OTP code"
+  },
+  "otpSentSuccess": "OTP সফলভাবে পাঠানো হয়েছে",
+  "@otpSentSuccess": {
+    "description": "Success message when OTP is sent"
+  },
+  "logoutConfirmTitle": "লগআউট",
+  "@logoutConfirmTitle": {
+    "description": "Title for logout confirmation dialog"
+  },
+  "logoutConfirmMessage": "আপনি কি নিশ্চিত যে আপনি লগআউট করতে চান?",
+  "@logoutConfirmMessage": {
+    "description": "Message for logout confirmation dialog"
+  },
+  "cancel": "বাতিল করুন",
+  "@cancel": {
+    "description": "Button label to cancel an action"
+  },
+  "logout": "লগআউট",
+  "@logout": {
+    "description": "Button label to logout"
   }
 }

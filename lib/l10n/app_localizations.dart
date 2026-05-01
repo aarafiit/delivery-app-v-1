@@ -110,6 +110,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login'**
   String get loginButton;
+
+  /// Title shown on the auth gateway screen
+  ///
+  /// In en, this message translates to:
+  /// **'Delicious food, groceries & essentials delivered fast'**
+  String get authGatewayTitle;
+
+  /// Button label to continue with phone authentication
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Phone'**
+  String get continueWithPhone;
+
+  /// Button label to continue as guest without authentication
+  ///
+  /// In en, this message translates to:
+  /// **'Continue as Guest'**
+  String get continueAsGuest;
+
+  /// Title shown on the phone login screen
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your mobile number'**
+  String get phoneLoginTitle;
+
+  /// Hint text for phone number input field
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneInputHint;
+
+  /// Title shown on the OTP verification screen
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code'**
+  String get otpVerificationTitle;
+
+  /// Subtitle showing the phone number where OTP was sent
+  ///
+  /// In en, this message translates to:
+  /// **'sent to {phoneNumber}'**
+  String otpVerificationSubtitle(String phoneNumber);
+
+  /// Button label to resend OTP code
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP'**
+  String get resendOtp;
+
+  /// Link text to go back and change phone number
+  ///
+  /// In en, this message translates to:
+  /// **'Change Number'**
+  String get changeNumber;
+
+  /// Button label to verify OTP code
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get verify;
+
+  /// Error message for invalid phone number
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid phone number'**
+  String get invalidPhoneNumber;
+
+  /// Error message for invalid OTP code
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid OTP code. Please try again.'**
+  String get invalidOtp;
+
+  /// Success message when OTP is sent
+  ///
+  /// In en, this message translates to:
+  /// **'OTP sent successfully'**
+  String get otpSentSuccess;
+
+  /// Title for logout confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logoutConfirmTitle;
+
+  /// Message for logout confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
+  String get logoutConfirmMessage;
+
+  /// Button label to cancel an action
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// Button label to logout
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
