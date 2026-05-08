@@ -70,7 +70,7 @@ class AuthGatewayScreen extends ConsumerWidget {
                     width: double.infinity,
                     child: Semantics(
                       button: true,
-                      label: 'Continue with phone number',
+                      label: 'Login',
                       hint: 'Navigate to phone login screen',
                       child: ElevatedButton(
                         onPressed: () {
@@ -105,7 +105,7 @@ class AuthGatewayScreen extends ConsumerWidget {
                     width: double.infinity,
                     child: Semantics(
                       button: true,
-                      label: 'Continue as guest',
+                      label: 'Skip',
                       hint: 'Browse the app without signing in',
                       child: OutlinedButton(
                         onPressed: () {
@@ -115,12 +115,9 @@ class AuthGatewayScreen extends ConsumerWidget {
                           context.goNamed(AppRoutes.homeName);
                         },
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: AppColors.authPrimary,
-                          side: const BorderSide(
-                            color: Colors.white,
-                            width: 2,
-                          ),
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: AppColors.navSelected,
+                          side: BorderSide.none,
                           elevation: 1,
                           shadowColor: Colors.black.withOpacity(0.1),
                           padding: const EdgeInsets.symmetric(
@@ -134,7 +131,7 @@ class AuthGatewayScreen extends ConsumerWidget {
                         child: Text(
                           l10n.continueAsGuest,
                           style: AppTextStyles.button.copyWith(
-                            color: AppColors.authPrimary,
+                            color: AppColors.navSelected,
                           ),
                         ),
                       ),

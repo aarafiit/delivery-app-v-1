@@ -71,8 +71,6 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
   /// Requests OTP from the backend and navigates to OTP verification on success.
   /// Requirements: 29.4, 29.5, 29.6, 37.2
   Future<void> _onContinue() async {
-    final l10n = AppLocalizations.of(context);
-    
     // Dismiss keyboard
     FocusScope.of(context).unfocus();
 

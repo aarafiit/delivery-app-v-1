@@ -118,7 +118,6 @@ void main() {
       final textFinder = find.text('Continue with Phone');
       expect(textFinder, findsOneWidget);
 
-      final text1x = tester.widget<Text>(textFinder);
       final size1x = tester.getSize(textFinder);
 
       // Test with 1.5x scale
@@ -128,7 +127,6 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      final text15x = tester.widget<Text>(textFinder);
       final size15x = tester.getSize(textFinder);
 
       // Verify text scales (size should increase)

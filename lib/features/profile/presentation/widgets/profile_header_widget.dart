@@ -8,17 +8,25 @@ import '../../../../../config/theme/app_spacing.dart';
 import '../../../../../core/widgets/app_button.dart';
 
 /// Displays the user's avatar, name, phone number, and an Edit Profile button.
+/// 
+/// Supports:
+/// - Network images with loading and error states
+/// - Initials-based avatar fallback
+/// - Premium gradient ring around avatar
+/// 
 /// Uses AppCard-style decoration with rounded corners and soft shadow.
 class ProfileHeaderWidget extends StatelessWidget {
   const ProfileHeaderWidget({
     super.key,
     required this.name,
     required this.phone,
+    this.profileImage,
     required this.onEditPressed,
   });
 
   final String name;
   final String phone;
+  final String? profileImage;
   final VoidCallback onEditPressed;
 
   String get _initials {
@@ -60,16 +68,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: CircleAvatar(
-                radius: 40,
-                backgroundColor: AppColors.primaryContainer,
-                child: Text(
-                  _initials,
-                  style: AppTextStyles.heading1.copyWith(
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
+              child: _buildAvatar(),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(name, style: AppTextStyles.heading2),
@@ -83,6 +82,72 @@ class ProfileHeaderWidget extends StatelessWidget {
               width: 160,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// Builds avatar with network image or initials fallback.
+  Widget _buildAvatar() {
+    final imageUrl = profileImage?.trim();
+    
+    // If no image URL or empty, show initials avatar
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return CircleAvatar(
+        radius: 40,
+        backgroundColor: AppColors.primaryContainer,
+        child: Text(
+          _initials,
+          style: AppTextStyles.heading1.copyWith(
+            color: AppColors.primary,
+          ),
+        ),
+      );
+    }
+
+    // Show network image with fallback
+    return CircleAvatar(
+      radius: 40,
+      backgroundColor: AppColors.primaryContainer,
+      child: ClipOval(
+        child: Image.network(
+          imageUrl,
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                      : null,
+                  strokeWidth: 2,
+                  color: AppColors.primary,
+                ),
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            // Show initials on error
+            return Container(
+              width: 80,
+              height: 80,
+              color: AppColors.primaryContainer,
+              child: Center(
+                child: Text(
+                  _initials,
+                  style: AppTextStyles.heading1.copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

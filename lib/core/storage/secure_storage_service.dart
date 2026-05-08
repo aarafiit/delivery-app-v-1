@@ -27,4 +27,38 @@ class SecureStorageService {
   Future<void> deleteAll() async {
     await _storage.deleteAll();
   }
+
+  // ---------------------------------------------------------------------------
+  // JWT Token Methods
+  // ---------------------------------------------------------------------------
+
+  /// Save access token to secure storage
+  Future<void> saveAccessToken(String token) async {
+    await write(key: 'access_token', value: token);
+  }
+
+  /// Get access token from secure storage
+  Future<String?> getAccessToken() async {
+    return await read(key: 'access_token');
+  }
+
+  /// Delete access token from secure storage
+  Future<void> deleteAccessToken() async {
+    await delete(key: 'access_token');
+  }
+
+  /// Save refresh token to secure storage
+  Future<void> saveRefreshToken(String token) async {
+    await write(key: 'refresh_token', value: token);
+  }
+
+  /// Get refresh token from secure storage
+  Future<String?> getRefreshToken() async {
+    return await read(key: 'refresh_token');
+  }
+
+  /// Delete refresh token from secure storage
+  Future<void> deleteRefreshToken() async {
+    await delete(key: 'refresh_token');
+  }
 }

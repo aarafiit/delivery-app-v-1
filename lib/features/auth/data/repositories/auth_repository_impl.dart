@@ -11,7 +11,7 @@ import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
 
 /// Implementation of [AuthRepository] that integrates with remote data source
-/// and local storage services for OTP-based authentication.
+/// and local storage services for OTP-based authentication with JWT tokens.
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
   final SecureStorageService _secureStorage;
@@ -53,14 +53,21 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await _remoteDataSource.verifyOtp(phoneNumber, otpCode);
 
       // Validate response before storing
-      if (response.authToken.isEmpty || response.userId.isEmpty) {
+      if (response.accessToken.isEmpty || 
+          response.refreshToken.isEmpty || 
+          response.userId.isEmpty) {
         await _clearAuthData();
         return const Left(ServerFailure('Invalid response from server'));
       }
 
+      // Calculate token expiry
+      final tokenExpiry = DateTime.now().add(Duration(seconds: response.expiresIn));
+
       // Store auth data in secure storage and shared preferences
       try {
-        await _secureStorage.write(key: 'auth_token', value: response.authToken);
+        await _secureStorage.saveAccessToken(response.accessToken);
+        await _secureStorage.saveRefreshToken(response.refreshToken);
+        await _preferences.saveTokenExpiry(tokenExpiry);
         await _preferences.setString('user_id', response.userId);
         await _preferences.setString('phone_number', response.phoneNumber);
         await _preferences.setBool('is_logged_in', true);
@@ -82,11 +89,38 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, void>> refreshSession() async {
+    try {
+      final refreshToken = await _secureStorage.getRefreshToken();
+      if (refreshToken == null) {
+        return const Left(ServerFailure('No refresh token available'));
+      }
+
+      final response = await _remoteDataSource.refreshToken(refreshToken);
+
+      // Calculate new expiry
+      final tokenExpiry = DateTime.now().add(Duration(seconds: response.expiresIn));
+
+      // Save new access token and expiry
+      await _secureStorage.saveAccessToken(response.accessToken);
+      await _preferences.saveTokenExpiry(tokenExpiry);
+
+      return const Right(null);
+    } on ApiException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (_) {
+      return const Left(NetworkFailure());
+    }
+  }
+
   /// Clears all authentication data from storage.
   /// Used when verification fails or errors occur.
   Future<void> _clearAuthData() async {
     try {
-      await _secureStorage.delete(key: 'auth_token');
+      await _secureStorage.deleteAccessToken();
+      await _secureStorage.deleteRefreshToken();
+      await _preferences.deleteTokenExpiry();
       await _preferences.remove('user_id');
       await _preferences.remove('phone_number');
       await _preferences.setBool('is_logged_in', false);
@@ -98,14 +132,20 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> logout() async {
     try {
-      // Clear auth token from secure storage
-      await _secureStorage.delete(key: 'auth_token');
+      // Get access token for backend logout call
+      final accessToken = await _secureStorage.getAccessToken();
 
-      // Clear auth-related data from shared preferences
-      await _preferences.remove('user_id');
-      await _preferences.remove('phone_number');
-      await _preferences.setBool('is_logged_in', false);
-      await _preferences.setBool('is_guest', false);
+      // Call backend logout if token exists
+      if (accessToken != null) {
+        try {
+          await _remoteDataSource.logout(accessToken);
+        } catch (_) {
+          // Continue with local logout even if backend call fails
+        }
+      }
+
+      // Clear all auth data
+      await _clearAuthData();
 
       return const Right(null);
     } catch (_) {
@@ -116,7 +156,8 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, AuthStateEntity>> restoreSession() async {
     try {
-      final authToken = await _secureStorage.read(key: 'auth_token');
+      final accessToken = await _secureStorage.getAccessToken();
+      final refreshToken = await _secureStorage.getRefreshToken();
       final isLoggedIn = _preferences.getBool('is_logged_in') ?? false;
       final isGuest = _preferences.getBool('is_guest') ?? false;
 
@@ -125,14 +166,18 @@ class AuthRepositoryImpl implements AuthRepository {
         return Right(AuthStateEntity.guest());
       }
 
-      // Check if user has a valid auth token and is logged in
-      if (authToken != null && isLoggedIn) {
+      // Check if user has valid tokens and is logged in
+      if (accessToken != null && refreshToken != null && isLoggedIn) {
         final userId = _preferences.getString('user_id') ?? '';
         final phoneNumber = _preferences.getString('phone_number') ?? '';
+        final tokenExpiry = _preferences.getTokenExpiry() ?? 
+            DateTime.now().add(const Duration(minutes: 15));
 
         return Right(
           AuthStateEntity.authenticated(
-            authToken: authToken,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            tokenExpiry: tokenExpiry,
             user: AuthUserEntity(
               userId: userId,
               phoneNumber: phoneNumber,

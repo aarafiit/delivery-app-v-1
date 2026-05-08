@@ -174,8 +174,19 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
   /// Checks for pending cart items and adds them to cart if present.
   /// Checks for intended route in authRedirectProvider and navigates there,
   /// otherwise navigates to Home.
-  /// Requirements: 30.11, 30.12, 27.7, 40.4, 40.5
+  /// Requirements: 30.11, 30.12, 27.7, 40.4, 40.5, JWT Auth Upgrade Phase 5
   Future<void> _navigateAfterVerification() async {
+    // Check if user is new
+    final authState = ref.read(authProvider).value;
+    final isNewUser = authState?.user?.isNewUser ?? false;
+    
+    if (isNewUser) {
+      // Navigate to complete profile screen for new users
+      if (!mounted) return;
+      context.goNamed(AppRoutes.completeProfileName);
+      return;
+    }
+    
     // Check for pending cart item
     final pendingProduct = ref.read(pendingCartItemProvider);
     

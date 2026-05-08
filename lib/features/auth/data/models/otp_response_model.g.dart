@@ -9,17 +9,21 @@ part of 'otp_response_model.dart';
 _$OtpResponseModelImpl _$$OtpResponseModelImplFromJson(
         Map<String, dynamic> json) =>
     _$OtpResponseModelImpl(
-      authToken: json['token'] as String,
       userId: json['userId'] as String,
       phoneNumber: json['phoneNumber'] as String,
+      accessToken: json['accessToken'] as String,
+      refreshToken: json['refreshToken'] as String,
+      expiresIn: (json['expiresIn'] as num).toInt(),
       isNewUser: json['isNewUser'] as bool,
     );
 
 Map<String, dynamic> _$$OtpResponseModelImplToJson(
         _$OtpResponseModelImpl instance) =>
     <String, dynamic>{
-      'token': instance.authToken,
       'userId': instance.userId,
       'phoneNumber': instance.phoneNumber,
+      'accessToken': instance.accessToken,
+      'refreshToken': instance.refreshToken,
+      'expiresIn': instance.expiresIn,
       'isNewUser': instance.isNewUser,
     };

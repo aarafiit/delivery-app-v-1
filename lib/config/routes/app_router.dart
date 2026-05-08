@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/auth/presentation/providers/auth_redirect_provider.dart';
 import '../../features/auth/presentation/screens/auth_gateway_screen.dart';
+import '../../features/auth/presentation/screens/complete_profile_screen.dart';
 import '../../features/auth/presentation/screens/otp_verification_screen.dart';
 import '../../features/auth/presentation/screens/phone_login_screen.dart';
 import '../../features/cart/presentation/screens/checkout_screen.dart';
@@ -46,6 +47,7 @@ GoRouter createAppRouter(WidgetRef ref) {
           intendedRoute == AppRoutes.authGateway ||
           intendedRoute == AppRoutes.phoneLogin ||
           intendedRoute == AppRoutes.otpVerification ||
+          intendedRoute == AppRoutes.completeProfile ||
           intendedRoute == AppRoutes.login) {
         return null;
       }
@@ -100,6 +102,11 @@ GoRouter createAppRouter(WidgetRef ref) {
           final phoneNumber = state.extra as String;
           return OtpVerificationScreen(phoneNumber: phoneNumber);
         },
+      ),
+      GoRoute(
+        path: AppRoutes.completeProfile,
+        name: AppRoutes.completeProfileName,
+        builder: (context, state) => const CompleteProfileScreen(),
       ),
       GoRoute(
         path: AppRoutes.login,

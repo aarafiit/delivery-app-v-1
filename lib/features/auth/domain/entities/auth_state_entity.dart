@@ -3,13 +3,17 @@ import 'auth_user_entity.dart';
 /// Domain entity representing the authentication state of the application.
 /// Pure Dart class — no framework dependencies.
 class AuthStateEntity {
-  final String? authToken;
+  final String? accessToken;
+  final String? refreshToken;
+  final DateTime? tokenExpiry;
   final AuthUserEntity? user;
   final bool isAuthenticated;
   final bool isGuest;
 
   const AuthStateEntity({
-    this.authToken,
+    this.accessToken,
+    this.refreshToken,
+    this.tokenExpiry,
     this.user,
     required this.isAuthenticated,
     required this.isGuest,
@@ -29,11 +33,15 @@ class AuthStateEntity {
 
   /// Factory method for authenticated state
   factory AuthStateEntity.authenticated({
-    required String authToken,
+    required String accessToken,
+    required String refreshToken,
+    required DateTime tokenExpiry,
     required AuthUserEntity user,
   }) =>
       AuthStateEntity(
-        authToken: authToken,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        tokenExpiry: tokenExpiry,
         user: user,
         isAuthenticated: true,
         isGuest: false,

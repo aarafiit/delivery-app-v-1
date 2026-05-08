@@ -9,9 +9,11 @@ class OtpResponseModel with _$OtpResponseModel {
   const OtpResponseModel._();
   
   const factory OtpResponseModel({
-    @JsonKey(name: 'token') required String authToken,
     required String userId,
     required String phoneNumber,
+    required String accessToken,
+    required String refreshToken,
+    required int expiresIn,
     required bool isNewUser,
   }) = _OtpResponseModel;
 

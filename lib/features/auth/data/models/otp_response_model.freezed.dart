@@ -20,10 +20,11 @@ OtpResponseModel _$OtpResponseModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$OtpResponseModel {
-  @JsonKey(name: 'token')
-  String get authToken => throw _privateConstructorUsedError;
   String get userId => throw _privateConstructorUsedError;
   String get phoneNumber => throw _privateConstructorUsedError;
+  String get accessToken => throw _privateConstructorUsedError;
+  String get refreshToken => throw _privateConstructorUsedError;
+  int get expiresIn => throw _privateConstructorUsedError;
   bool get isNewUser => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -39,9 +40,11 @@ abstract class $OtpResponseModelCopyWith<$Res> {
       _$OtpResponseModelCopyWithImpl<$Res, OtpResponseModel>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'token') String authToken,
-      String userId,
+      {String userId,
       String phoneNumber,
+      String accessToken,
+      String refreshToken,
+      int expiresIn,
       bool isNewUser});
 }
 
@@ -58,16 +61,14 @@ class _$OtpResponseModelCopyWithImpl<$Res, $Val extends OtpResponseModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? authToken = null,
     Object? userId = null,
     Object? phoneNumber = null,
+    Object? accessToken = null,
+    Object? refreshToken = null,
+    Object? expiresIn = null,
     Object? isNewUser = null,
   }) {
     return _then(_value.copyWith(
-      authToken: null == authToken
-          ? _value.authToken
-          : authToken // ignore: cast_nullable_to_non_nullable
-              as String,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -76,6 +77,18 @@ class _$OtpResponseModelCopyWithImpl<$Res, $Val extends OtpResponseModel>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as String,
+      accessToken: null == accessToken
+          ? _value.accessToken
+          : accessToken // ignore: cast_nullable_to_non_nullable
+              as String,
+      refreshToken: null == refreshToken
+          ? _value.refreshToken
+          : refreshToken // ignore: cast_nullable_to_non_nullable
+              as String,
+      expiresIn: null == expiresIn
+          ? _value.expiresIn
+          : expiresIn // ignore: cast_nullable_to_non_nullable
+              as int,
       isNewUser: null == isNewUser
           ? _value.isNewUser
           : isNewUser // ignore: cast_nullable_to_non_nullable
@@ -93,9 +106,11 @@ abstract class _$$OtpResponseModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'token') String authToken,
-      String userId,
+      {String userId,
       String phoneNumber,
+      String accessToken,
+      String refreshToken,
+      int expiresIn,
       bool isNewUser});
 }
 
@@ -110,16 +125,14 @@ class __$$OtpResponseModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? authToken = null,
     Object? userId = null,
     Object? phoneNumber = null,
+    Object? accessToken = null,
+    Object? refreshToken = null,
+    Object? expiresIn = null,
     Object? isNewUser = null,
   }) {
     return _then(_$OtpResponseModelImpl(
-      authToken: null == authToken
-          ? _value.authToken
-          : authToken // ignore: cast_nullable_to_non_nullable
-              as String,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -128,6 +141,18 @@ class __$$OtpResponseModelImplCopyWithImpl<$Res>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as String,
+      accessToken: null == accessToken
+          ? _value.accessToken
+          : accessToken // ignore: cast_nullable_to_non_nullable
+              as String,
+      refreshToken: null == refreshToken
+          ? _value.refreshToken
+          : refreshToken // ignore: cast_nullable_to_non_nullable
+              as String,
+      expiresIn: null == expiresIn
+          ? _value.expiresIn
+          : expiresIn // ignore: cast_nullable_to_non_nullable
+              as int,
       isNewUser: null == isNewUser
           ? _value.isNewUser
           : isNewUser // ignore: cast_nullable_to_non_nullable
@@ -140,9 +165,11 @@ class __$$OtpResponseModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$OtpResponseModelImpl extends _OtpResponseModel {
   const _$OtpResponseModelImpl(
-      {@JsonKey(name: 'token') required this.authToken,
-      required this.userId,
+      {required this.userId,
       required this.phoneNumber,
+      required this.accessToken,
+      required this.refreshToken,
+      required this.expiresIn,
       required this.isNewUser})
       : super._();
 
@@ -150,18 +177,21 @@ class _$OtpResponseModelImpl extends _OtpResponseModel {
       _$$OtpResponseModelImplFromJson(json);
 
   @override
-  @JsonKey(name: 'token')
-  final String authToken;
-  @override
   final String userId;
   @override
   final String phoneNumber;
+  @override
+  final String accessToken;
+  @override
+  final String refreshToken;
+  @override
+  final int expiresIn;
   @override
   final bool isNewUser;
 
   @override
   String toString() {
-    return 'OtpResponseModel(authToken: $authToken, userId: $userId, phoneNumber: $phoneNumber, isNewUser: $isNewUser)';
+    return 'OtpResponseModel(userId: $userId, phoneNumber: $phoneNumber, accessToken: $accessToken, refreshToken: $refreshToken, expiresIn: $expiresIn, isNewUser: $isNewUser)';
   }
 
   @override
@@ -169,19 +199,23 @@ class _$OtpResponseModelImpl extends _OtpResponseModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OtpResponseModelImpl &&
-            (identical(other.authToken, authToken) ||
-                other.authToken == authToken) &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.phoneNumber, phoneNumber) ||
                 other.phoneNumber == phoneNumber) &&
+            (identical(other.accessToken, accessToken) ||
+                other.accessToken == accessToken) &&
+            (identical(other.refreshToken, refreshToken) ||
+                other.refreshToken == refreshToken) &&
+            (identical(other.expiresIn, expiresIn) ||
+                other.expiresIn == expiresIn) &&
             (identical(other.isNewUser, isNewUser) ||
                 other.isNewUser == isNewUser));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, authToken, userId, phoneNumber, isNewUser);
+  int get hashCode => Object.hash(runtimeType, userId, phoneNumber, accessToken,
+      refreshToken, expiresIn, isNewUser);
 
   @JsonKey(ignore: true)
   @override
@@ -200,9 +234,11 @@ class _$OtpResponseModelImpl extends _OtpResponseModel {
 
 abstract class _OtpResponseModel extends OtpResponseModel {
   const factory _OtpResponseModel(
-      {@JsonKey(name: 'token') required final String authToken,
-      required final String userId,
+      {required final String userId,
       required final String phoneNumber,
+      required final String accessToken,
+      required final String refreshToken,
+      required final int expiresIn,
       required final bool isNewUser}) = _$OtpResponseModelImpl;
   const _OtpResponseModel._() : super._();
 
@@ -210,12 +246,15 @@ abstract class _OtpResponseModel extends OtpResponseModel {
       _$OtpResponseModelImpl.fromJson;
 
   @override
-  @JsonKey(name: 'token')
-  String get authToken;
-  @override
   String get userId;
   @override
   String get phoneNumber;
+  @override
+  String get accessToken;
+  @override
+  String get refreshToken;
+  @override
+  int get expiresIn;
   @override
   bool get isNewUser;
   @override

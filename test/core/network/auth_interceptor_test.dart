@@ -1,35 +1,78 @@
 import 'package:delivery_app/core/network/auth_interceptor.dart';
+import 'package:delivery_app/core/storage/preferences_service.dart';
+import 'package:delivery_app/core/storage/secure_storage_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockSecureStorageService extends Mock implements SecureStorageService {}
+
+class MockPreferencesService extends Mock implements PreferencesService {}
+
+class MockDio extends Mock implements Dio {}
+
+class MockRequestInterceptorHandler extends Mock
+    implements RequestInterceptorHandler {}
 
 void main() {
+  setUpAll(() {
+    // Register fallback values for mocktail
+    registerFallbackValue(RequestOptions(path: ''));
+  });
+
   group('AuthInterceptor', () {
-    test('injects Authorization header when token is present', () {
-      const String token = 'test-token-123';
-      final interceptor = AuthInterceptor(tokenProvider: () => token);
+    late MockSecureStorageService mockSecureStorage;
+    late MockPreferencesService mockPreferences;
+    late MockDio mockDio;
+    late AuthInterceptor interceptor;
 
-      final options = RequestOptions(path: '/test');
-      interceptor.onRequest(options, RequestInterceptorHandler());
-
-      expect(options.headers['Authorization'], 'Bearer test-token-123');
+    setUp(() {
+      mockSecureStorage = MockSecureStorageService();
+      mockPreferences = MockPreferencesService();
+      mockDio = MockDio();
+      interceptor = AuthInterceptor(mockSecureStorage, mockPreferences, mockDio);
     });
 
-    test('does not inject Authorization header when token is null', () {
-      final interceptor = AuthInterceptor(tokenProvider: () => null);
+    test('injects Authorization header when access token is present', () async {
+      const String token = 'test-access-token-123';
+      when(() => mockSecureStorage.getAccessToken())
+          .thenAnswer((_) async => token);
 
       final options = RequestOptions(path: '/test');
-      interceptor.onRequest(options, RequestInterceptorHandler());
+      final handler = MockRequestInterceptorHandler();
+      when(() => handler.next(any())).thenReturn(null);
 
-      expect(options.headers.containsKey('Authorization'), isFalse);
+      await interceptor.onRequest(options, handler);
+
+      expect(options.headers['Authorization'], 'Bearer test-access-token-123');
+      verify(() => handler.next(options)).called(1);
     });
 
-    test('does not inject Authorization header when token is empty', () {
-      final interceptor = AuthInterceptor(tokenProvider: () => '');
+    test('does not inject Authorization header when token is null', () async {
+      when(() => mockSecureStorage.getAccessToken())
+          .thenAnswer((_) async => null);
 
       final options = RequestOptions(path: '/test');
-      interceptor.onRequest(options, RequestInterceptorHandler());
+      final handler = MockRequestInterceptorHandler();
+      when(() => handler.next(any())).thenReturn(null);
+
+      await interceptor.onRequest(options, handler);
 
       expect(options.headers.containsKey('Authorization'), isFalse);
+      verify(() => handler.next(options)).called(1);
+    });
+
+    test('skips auth for public endpoints', () async {
+      final options = RequestOptions(path: '/app/auth/phone/login');
+      final handler = MockRequestInterceptorHandler();
+      when(() => handler.next(any())).thenReturn(null);
+
+      await interceptor.onRequest(options, handler);
+
+      // Should not call getAccessToken for public endpoints
+      verifyNever(() => mockSecureStorage.getAccessToken());
+      expect(options.headers.containsKey('Authorization'), isFalse);
+      verify(() => handler.next(options)).called(1);
     });
   });
 }

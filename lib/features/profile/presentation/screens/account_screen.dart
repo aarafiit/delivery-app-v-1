@@ -9,6 +9,7 @@ import '../../../../config/theme/app_spacing.dart';
 import '../../../../config/theme/app_radius.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_dialog.dart';
+import '../../../../core/widgets/shimmer_loader_widget.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../providers/locale_provider.dart';
@@ -17,8 +18,15 @@ import '../providers/theme_provider.dart';
 import '../widgets/profile_header_widget.dart';
 import '../widgets/setting_tile_widget.dart';
 
-/// Profile / Account screen — shown when the user taps the Account tab.
-/// (Requirements 18.1 – 18.11)
+/// Profile / Account screen with real backend integration.
+/// 
+/// Supports multiple states:
+/// - Guest mode: Shows login CTA
+/// - Loading: Shows skeleton loaders
+/// - Error: Shows error message with retry
+/// - Data: Shows real profile data
+/// 
+/// Requirements: 18.1 – 18.11, Profile Integration
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({super.key});
 
@@ -26,8 +34,39 @@ class AccountScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final name = ref.watch(dummyUserNameProvider);
-    final phone = ref.watch(dummyUserPhoneProvider);
+    // Check authentication state
+    final authState = ref.watch(authProvider);
+    final isGuest = authState.value?.isGuest ?? false;
+    final isAuthenticated = authState.value?.isAuthenticated ?? false;
+    
+    // Show guest profile if user is in guest mode
+    if (isGuest || !isAuthenticated) {
+      return _buildGuestProfile(context, ref);
+    }
+    
+    // Watch profile state for authenticated users
+    final profileState = ref.watch(profileProvider);
+    
+    return profileState.when(
+      data: (profile) {
+        if (profile == null) {
+          // Profile not loaded yet - show loading
+          return _buildLoadingProfile(context, ref);
+        }
+        // Show authenticated profile with real data
+        return _buildAuthenticatedProfile(context, ref, profile);
+      },
+      loading: () => _buildLoadingProfile(context, ref),
+      error: (error, stack) => _buildErrorProfile(context, ref, error),
+    );
+  }
+
+  /// Builds the authenticated profile view with real data.
+  Widget _buildAuthenticatedProfile(
+    BuildContext context,
+    WidgetRef ref,
+    dynamic profile,
+  ) {
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
     final isDark = themeMode == ThemeMode.dark;
@@ -48,8 +87,9 @@ class AccountScreen extends ConsumerWidget {
         children: [
           // ── Profile Header ──────────────────────────────────────────────
           ProfileHeaderWidget(
-            name: name,
-            phone: phone,
+            name: profile.displayName,
+            phone: profile.phoneNumber,
+            profileImage: profile.profileImage,
             onEditPressed: () => context.pushNamed(AppRoutes.editProfileName),
           ),
 
@@ -161,6 +201,416 @@ class AccountScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// Builds the loading state with skeleton loaders.
+  Widget _buildLoadingProfile(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    final locale = ref.watch(localeProvider);
+    final isDark = themeMode == ThemeMode.dark;
+    final isEnglish = locale.languageCode == 'en';
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('My Profile'),
+        backgroundColor: AppColors.surface,
+        foregroundColor: AppColors.textPrimary,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        titleTextStyle: AppTextStyles.heading2,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
+        children: [
+          // ── Profile Header Skeleton ─────────────────────────────────────
+          Container(
+            margin: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.sm,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: AppRadius.lgAll,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: AppSpacing.xxl,
+                horizontal: AppSpacing.xl,
+              ),
+              child: Column(
+                children: [
+                  // Avatar skeleton
+                  ShimmerLoaderWidget(
+                    width: 86,
+                    height: 86,
+                    borderRadius: BorderRadius.circular(43),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  // Name skeleton
+                  ShimmerLoaderWidget(
+                    width: 150,
+                    height: 24,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  // Phone skeleton
+                  ShimmerLoaderWidget(
+                    width: 120,
+                    height: 16,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  // Button skeleton
+                  ShimmerLoaderWidget(
+                    width: 160,
+                    height: 40,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: AppSpacing.lg),
+
+          // ── Preferences (still functional during loading) ───────────────
+          SettingSection(
+            label: 'Preferences',
+            tiles: [
+              SettingTileWidget(
+                icon: Icons.language_outlined,
+                title: 'Language',
+                trailing: _LanguageToggle(
+                  isEnglish: isEnglish,
+                  onToggle: () {
+                    ref.read(localeProvider.notifier).state = isEnglish
+                        ? const Locale('bn')
+                        : const Locale('en');
+                  },
+                ),
+              ),
+              SettingTileWidget(
+                icon: Icons.dark_mode_outlined,
+                title: 'Dark Mode',
+                trailing: Switch(
+                  value: isDark,
+                  activeColor: AppColors.primary,
+                  onChanged: (value) {
+                    ref.read(themeModeProvider.notifier).state =
+                        value ? ThemeMode.dark : ThemeMode.light;
+                  },
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: AppSpacing.xxxl),
+
+          // ── Footer ───────────────────────────────────────────────────────
+          Center(
+            child: Text(
+              'Version $_appVersion',
+              style: AppTextStyles.caption,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Builds the error state with retry button.
+  Widget _buildErrorProfile(BuildContext context, WidgetRef ref, Object error) {
+    final themeMode = ref.watch(themeModeProvider);
+    final locale = ref.watch(localeProvider);
+    final isDark = themeMode == ThemeMode.dark;
+    final isEnglish = locale.languageCode == 'en';
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('My Profile'),
+        backgroundColor: AppColors.surface,
+        foregroundColor: AppColors.textPrimary,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        titleTextStyle: AppTextStyles.heading2,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
+        children: [
+          const SizedBox(height: AppSpacing.xxxl),
+          
+          // ── Error Message ───────────────────────────────────────────────
+          Center(
+            child: Column(
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: AppColors.error,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                Text(
+                  'Failed to load profile',
+                  style: AppTextStyles.heading2,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxl),
+                  child: Text(
+                    error.toString(),
+                    style: AppTextStyles.body.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                
+                // Retry Button
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxl),
+                  child: AppButton(
+                    label: 'Retry',
+                    variant: AppButtonVariant.primary,
+                    onPressed: () => _onRetryPressed(ref),
+                    icon: Icons.refresh,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: AppSpacing.xxxl),
+
+          // ── Preferences (still functional during error) ─────────────────
+          SettingSection(
+            label: 'Preferences',
+            tiles: [
+              SettingTileWidget(
+                icon: Icons.language_outlined,
+                title: 'Language',
+                trailing: _LanguageToggle(
+                  isEnglish: isEnglish,
+                  onToggle: () {
+                    ref.read(localeProvider.notifier).state = isEnglish
+                        ? const Locale('bn')
+                        : const Locale('en');
+                  },
+                ),
+              ),
+              SettingTileWidget(
+                icon: Icons.dark_mode_outlined,
+                title: 'Dark Mode',
+                trailing: Switch(
+                  value: isDark,
+                  activeColor: AppColors.primary,
+                  onChanged: (value) {
+                    ref.read(themeModeProvider.notifier).state =
+                        value ? ThemeMode.dark : ThemeMode.light;
+                  },
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: AppSpacing.xxxl),
+
+          // ── Footer ───────────────────────────────────────────────────────
+          Center(
+            child: Text(
+              'Version $_appVersion',
+              style: AppTextStyles.caption,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Builds the guest profile view.
+  /// 
+  /// Shows limited functionality with a login CTA.
+  /// Requirements: JWT Auth Upgrade Phase 5, Task 13
+  Widget _buildGuestProfile(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    final locale = ref.watch(localeProvider);
+    final isDark = themeMode == ThemeMode.dark;
+    final isEnglish = locale.languageCode == 'en';
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('Profile'),
+        backgroundColor: AppColors.surface,
+        foregroundColor: AppColors.textPrimary,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        titleTextStyle: AppTextStyles.heading2,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
+        children: [
+          const SizedBox(height: AppSpacing.xxxl),
+          
+          // ── Guest Avatar & Message ──────────────────────────────────────
+          Center(
+            child: Column(
+              children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceVariant,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.3),
+                      width: 2,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.person_outline,
+                    size: 50,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                Text(
+                  'Welcome, Guest',
+                  style: AppTextStyles.heading2,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Login for full experience',
+                  style: AppTextStyles.body.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                
+                // Login Button
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxl),
+                  child: AppButton(
+                    label: 'Login',
+                    variant: AppButtonVariant.primary,
+                    onPressed: () => context.goNamed(AppRoutes.authGatewayName),
+                    icon: Icons.login_outlined,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: AppSpacing.xxxl),
+
+          // ── View-Only Preferences ───────────────────────────────────────
+          SettingSection(
+            label: 'Preferences',
+            tiles: [
+              SettingTileWidget(
+                icon: Icons.language_outlined,
+                title: 'Language',
+                trailing: _LanguageToggle(
+                  isEnglish: isEnglish,
+                  onToggle: () {
+                    ref.read(localeProvider.notifier).state = isEnglish
+                        ? const Locale('bn')
+                        : const Locale('en');
+                  },
+                ),
+              ),
+              SettingTileWidget(
+                icon: Icons.dark_mode_outlined,
+                title: 'Dark Mode',
+                trailing: Switch(
+                  value: isDark,
+                  activeColor: AppColors.primary,
+                  onChanged: (value) {
+                    ref.read(themeModeProvider.notifier).state =
+                        value ? ThemeMode.dark : ThemeMode.light;
+                  },
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: AppSpacing.lg),
+
+          // ── View-Only Support ───────────────────────────────────────────
+          SettingSection(
+            label: 'Support',
+            tiles: [
+              SettingTileWidget(
+                icon: Icons.help_outline,
+                title: 'Help & Support',
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: AppColors.textSecondary,
+                ),
+                onTap: () => context.pushNamed(AppRoutes.helpSupportName),
+              ),
+              SettingTileWidget(
+                icon: Icons.description_outlined,
+                title: 'Terms & Conditions',
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: AppColors.textSecondary,
+                ),
+                onTap: () {
+                  // TODO: Navigate to terms & conditions
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Terms & Conditions coming soon'),
+                    ),
+                  );
+                },
+              ),
+              SettingTileWidget(
+                icon: Icons.info_outline,
+                title: 'About',
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: AppColors.textSecondary,
+                ),
+                onTap: () {
+                  // TODO: Navigate to about screen
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('About screen coming soon'),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+
+          const SizedBox(height: AppSpacing.xxxl),
+
+          // ── Footer ───────────────────────────────────────────────────────
+          Center(
+            child: Text(
+              'Version $_appVersion',
+              style: AppTextStyles.caption,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+        ],
+      ),
+    );
+  }
+
+  /// Handles retry button press.
+  void _onRetryPressed(WidgetRef ref) {
+    final authState = ref.read(authProvider);
+    final userId = authState.value?.user?.userId;
+    
+    if (userId != null) {
+      ref.read(profileProvider.notifier).fetchProfile(userId);
+    }
   }
 
   Future<void> _onLogOutPressed(BuildContext context, WidgetRef ref) async {

@@ -10,6 +10,7 @@ class AppRoutes {
   static const String authGateway = '/auth-gateway';
   static const String phoneLogin = '/phone-login';
   static const String otpVerification = '/otp-verification';
+  static const String completeProfile = '/complete-profile';
   static const String home = '/home';
   static const String profile = '/profile';
   static const String editProfile = '/profile/edit';
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String authGatewayName = 'authGateway';
   static const String phoneLoginName = 'phoneLogin';
   static const String otpVerificationName = 'otpVerification';
+  static const String completeProfileName = 'completeProfile';
   static const String homeName = 'home';
   static const String profileName = 'profile';
   static const String editProfileName = 'editProfile';

@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../config/env/env_config.dart';
 import '../../config/env/prod_config.dart';
+import '../storage/storage_providers.dart';
 import 'api_client.dart';
+import 'auth_interceptor.dart';
 
 /// Provider for the active [EnvConfig].
 ///
@@ -14,13 +16,20 @@ final envConfigProvider = Provider<EnvConfig>(
 
 /// Provider for the [ApiClient].
 ///
-/// Reads [envConfigProvider] for the base URL and uses a null token
-/// provider by default (no auth token until the auth feature is wired).
+/// Reads [envConfigProvider] for the base URL and adds auth interceptor
+/// with storage dependencies for JWT token management.
 final apiClientProvider = Provider<ApiClient>((ref) {
   final config = ref.watch(envConfigProvider);
-  return ApiClient(
-    config: config,
-    // Token provider will be replaced once the auth feature is implemented.
-    tokenProvider: () => null,
+  final apiClient = ApiClient(config: config);
+
+  // Add auth interceptor with storage dependencies
+  final secureStorage = ref.watch(secureStorageServiceProvider);
+  final preferences = ref.watch(preferencesServiceProvider);
+  
+  apiClient.dio.interceptors.insert(
+    0, // Insert at the beginning to run before other interceptors
+    AuthInterceptor(secureStorage, preferences, apiClient.dio),
   );
+
+  return apiClient;
 });

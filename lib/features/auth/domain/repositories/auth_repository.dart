@@ -23,6 +23,10 @@ abstract interface class AuthRepository {
     String otpCode,
   );
 
+  /// Refreshes the access token using the stored refresh token.
+  /// Returns void on success or a typed [Failure] on error.
+  Future<Either<Failure, void>> refreshSession();
+
   /// Logs out the current user and clears stored credentials.
   Future<Either<Failure, void>> logout();
 
