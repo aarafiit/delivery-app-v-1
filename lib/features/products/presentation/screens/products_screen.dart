@@ -7,9 +7,9 @@ import '../../../../config/theme/app_spacing.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/section_header.dart';
 import '../../../../core/widgets/shimmer_loader_widget.dart';
+import '../../../banners/presentation/providers/banners_provider.dart';
 import '../../../categories/presentation/providers/categories_provider.dart';
 import '../../../home/presentation/providers/bottom_nav_provider.dart';
-import '../providers/banners_provider.dart';
 import '../providers/products_provider.dart';
 import '../widgets/banner_carousel.dart';
 import '../widgets/category_list.dart';
@@ -25,20 +25,22 @@ class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});
 
   Future<void> _onRefresh(WidgetRef ref) async {
-    // Invalidate both products and categories so newly added categories
-    // appear on pull-to-refresh, then wait for the new data to arrive.
+    // Invalidate products, categories and banners so newly added content
+    // appears on pull-to-refresh, then wait for the new data to arrive.
     ref.invalidate(productsProvider);
     ref.invalidate(categoriesProvider);
+    ref.invalidate(bannersProvider);
     await Future.wait([
       ref.read(productsProvider.future),
       ref.read(categoriesProvider.future),
+      ref.read(bannersProvider.future),
     ]);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productsAsync = ref.watch(productsProvider);
-    final bannerUrls = ref.watch(bannersProvider);
+    final bannersAsync = ref.watch(bannersProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -102,7 +104,17 @@ class ProductsScreen extends ConsumerWidget {
                 top: AppSpacing.lg,
                 bottom: AppSpacing.sm,
               ),
-              child: BannerCarousel(imageUrls: bannerUrls),
+              child: bannersAsync.when(
+                data: (banners) => BannerCarousel(
+                  imageUrls: banners.map((b) => b.imageUrl).toList(),
+                ),
+                loading: () => const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  child: SizedBox(height: 168, child: ShimmerBannerLoader()),
+                ),
+                // Banners are non-critical — hide the section on failure.
+                error: (_, __) => const SizedBox.shrink(),
+              ),
             ),
           ),
 
