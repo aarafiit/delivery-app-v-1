@@ -32,6 +32,8 @@ class SearchResultItem {
 
   bool get isProduct => type.toUpperCase() == 'PRODUCT';
 
+  bool get isCategory => type.toUpperCase() == 'CATEGORY';
+
   bool get hasDiscount =>
       price != null &&
       discountPrice != null &&

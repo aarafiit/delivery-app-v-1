@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../config/theme/app_colors.dart';
+import '../../../../config/theme/app_radius.dart';
 import '../../../../config/theme/app_text_styles.dart';
 import '../../../../config/theme/app_spacing.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
@@ -95,6 +96,22 @@ class ProductsScreen extends ConsumerWidget {
                 ),
               ),
             ],
+            // Sticky search bar — tapping it opens the Search tab.
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(60),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg,
+                  0,
+                  AppSpacing.lg,
+                  AppSpacing.md,
+                ),
+                child: _HomeSearchBar(
+                  onTap: () =>
+                      ref.read(bottomNavIndexProvider.notifier).state = 2,
+                ),
+              ),
+            ),
           ),
 
           // ── Banner Carousel ────────────────────────────────────────────
@@ -213,6 +230,48 @@ class ProductsScreen extends ConsumerWidget {
           ),
         ],
       ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Sticky home search bar
+// ---------------------------------------------------------------------------
+
+/// A read-only search field shown in the pinned app bar. Tapping it opens the
+/// dedicated Search tab rather than editing inline.
+class _HomeSearchBar extends StatelessWidget {
+  const _HomeSearchBar({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        height: 44,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        decoration: const BoxDecoration(
+          color: AppColors.surfaceVariant,
+          borderRadius: AppRadius.smAll,
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.search_rounded,
+              color: AppColors.textSecondary,
+              size: 22,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              'Search products, categories...',
+              style: AppTextStyles.body.copyWith(color: AppColors.textHint),
+            ),
+          ],
+        ),
       ),
     );
   }

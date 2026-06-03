@@ -9,7 +9,11 @@ import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_radius.dart';
 import '../../../../config/theme/app_spacing.dart';
 import '../../../../config/theme/app_text_styles.dart';
+import '../../../../core/constants/category_icon_mapper.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
+import '../../../categories/domain/entities/category_entity.dart';
+import '../../../categories/presentation/providers/categories_provider.dart';
+import '../../../home/presentation/providers/bottom_nav_provider.dart';
 import '../../domain/entities/search_result_item_entity.dart';
 import '../../domain/entities/search_results_entity.dart';
 import '../providers/search_provider.dart';
@@ -54,11 +58,36 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   void _openResult(SearchResultItem item) {
     FocusScope.of(context).unfocus();
+
+    // Products open their details page.
     if (item.isProduct) {
       context.pushNamed(
         AppRoutes.productDetailsName,
         pathParameters: {'id': item.id},
       );
+      return;
+    }
+
+    // Categories select the category and jump to the Categories tab.
+    if (item.isCategory) {
+      final id = int.tryParse(item.id);
+      if (id == null) return;
+
+      // Prefer the fully-loaded entity (correct icon/name); fall back to a
+      // minimal one built from the search result if the list isn't loaded.
+      final loaded = ref.read(categoriesProvider).valueOrNull ?? const [];
+      final entity = loaded.firstWhere(
+        (c) => c.id == id,
+        orElse: () => CategoryEntity(
+          id: id,
+          name: item.title,
+          isActive: true,
+          iconKey: CategoryIconMapper.keyFor(item.title),
+        ),
+      );
+
+      ref.read(selectedCategoryProvider.notifier).state = entity;
+      ref.read(bottomNavIndexProvider.notifier).state = 1;
     }
   }
 

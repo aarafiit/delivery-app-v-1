@@ -10,6 +10,7 @@ import '../../../../core/constants/category_icon_mapper.dart';
 import '../../../../core/widgets/shimmer_loader_widget.dart';
 import '../../../categories/domain/entities/category_entity.dart';
 import '../../../categories/presentation/providers/categories_provider.dart';
+import '../../../home/presentation/providers/bottom_nav_provider.dart';
 
 /// Horizontal scrollable list of animated category cards.
 /// Fetches live data from [categoriesProvider] and maps each category
@@ -44,16 +45,17 @@ class CategoryList extends ConsumerWidget {
 }
 
 /// A single category card with press-scale animation and icon bounce.
-class _AnimatedCategoryCard extends StatefulWidget {
+class _AnimatedCategoryCard extends ConsumerStatefulWidget {
   const _AnimatedCategoryCard({required this.category});
 
   final CategoryEntity category;
 
   @override
-  State<_AnimatedCategoryCard> createState() => _AnimatedCategoryCardState();
+  ConsumerState<_AnimatedCategoryCard> createState() =>
+      _AnimatedCategoryCardState();
 }
 
-class _AnimatedCategoryCardState extends State<_AnimatedCategoryCard>
+class _AnimatedCategoryCardState extends ConsumerState<_AnimatedCategoryCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _scaleAnim;
@@ -84,6 +86,13 @@ class _AnimatedCategoryCardState extends State<_AnimatedCategoryCard>
   void _onTapUp(_) => _controller.reverse();
   void _onTapCancel() => _controller.reverse();
 
+  /// Select the tapped category and jump to the Categories tab so its
+  /// products are shown.
+  void _onTap() {
+    ref.read(selectedCategoryProvider.notifier).state = widget.category;
+    ref.read(bottomNavIndexProvider.notifier).state = 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     final icon = CategoryIconMapper.iconFor(widget.category.iconKey);
@@ -93,7 +102,7 @@ class _AnimatedCategoryCardState extends State<_AnimatedCategoryCard>
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
-      onTap: () {},
+      onTap: _onTap,
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) => Transform.scale(
