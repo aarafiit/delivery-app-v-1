@@ -20,6 +20,7 @@ class ProductModel with _$ProductModel {
     required double price,
     required double discountPrice,
     required String imageUrl,
+    @Default(<String>[]) List<String> imageUrls,
     required bool isAvailable,
   }) = _ProductModel;
 
@@ -35,6 +36,7 @@ class ProductModel with _$ProductModel {
         price: price,
         discountPrice: discountPrice,
         imageUrl: imageUrl,
+        imageUrls: imageUrls,
         isAvailable: isAvailable,
       );
 }

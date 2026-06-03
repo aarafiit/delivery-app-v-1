@@ -42,6 +42,7 @@ class ProductRepositoryImpl implements ProductRepository {
                 price: e.price,
                 discountPrice: e.discountPrice,
                 imageUrl: _rewriteMediaUrl(e.imageUrl),
+                imageUrls: e.imageUrls.map(_rewriteMediaUrl).toList(),
                 isAvailable: e.isAvailable,
               ))
           .toList();
@@ -66,6 +67,7 @@ class ProductRepositoryImpl implements ProductRepository {
         price: entity.price,
         discountPrice: entity.discountPrice,
         imageUrl: _rewriteMediaUrl(entity.imageUrl),
+        imageUrls: entity.imageUrls.map(_rewriteMediaUrl).toList(),
         isAvailable: entity.isAvailable,
       ));
     } on ApiException catch (e) {

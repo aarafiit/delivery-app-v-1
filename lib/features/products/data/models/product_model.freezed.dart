@@ -27,6 +27,7 @@ mixin _$ProductModel {
   double get price => throw _privateConstructorUsedError;
   double get discountPrice => throw _privateConstructorUsedError;
   String get imageUrl => throw _privateConstructorUsedError;
+  List<String> get imageUrls => throw _privateConstructorUsedError;
   bool get isAvailable => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -49,6 +50,7 @@ abstract class $ProductModelCopyWith<$Res> {
       double price,
       double discountPrice,
       String imageUrl,
+      List<String> imageUrls,
       bool isAvailable});
 }
 
@@ -72,6 +74,7 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
     Object? price = null,
     Object? discountPrice = null,
     Object? imageUrl = null,
+    Object? imageUrls = null,
     Object? isAvailable = null,
   }) {
     return _then(_value.copyWith(
@@ -103,6 +106,10 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String,
+      imageUrls: null == imageUrls
+          ? _value.imageUrls
+          : imageUrls // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       isAvailable: null == isAvailable
           ? _value.isAvailable
           : isAvailable // ignore: cast_nullable_to_non_nullable
@@ -127,6 +134,7 @@ abstract class _$$ProductModelImplCopyWith<$Res>
       double price,
       double discountPrice,
       String imageUrl,
+      List<String> imageUrls,
       bool isAvailable});
 }
 
@@ -148,6 +156,7 @@ class __$$ProductModelImplCopyWithImpl<$Res>
     Object? price = null,
     Object? discountPrice = null,
     Object? imageUrl = null,
+    Object? imageUrls = null,
     Object? isAvailable = null,
   }) {
     return _then(_$ProductModelImpl(
@@ -179,6 +188,10 @@ class __$$ProductModelImplCopyWithImpl<$Res>
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String,
+      imageUrls: null == imageUrls
+          ? _value._imageUrls
+          : imageUrls // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       isAvailable: null == isAvailable
           ? _value.isAvailable
           : isAvailable // ignore: cast_nullable_to_non_nullable
@@ -198,8 +211,10 @@ class _$ProductModelImpl extends _ProductModel {
       required this.price,
       required this.discountPrice,
       required this.imageUrl,
+      final List<String> imageUrls = const <String>[],
       required this.isAvailable})
-      : super._();
+      : _imageUrls = imageUrls,
+        super._();
 
   factory _$ProductModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ProductModelImplFromJson(json);
@@ -218,12 +233,21 @@ class _$ProductModelImpl extends _ProductModel {
   final double discountPrice;
   @override
   final String imageUrl;
+  final List<String> _imageUrls;
+  @override
+  @JsonKey()
+  List<String> get imageUrls {
+    if (_imageUrls is EqualUnmodifiableListView) return _imageUrls;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_imageUrls);
+  }
+
   @override
   final bool isAvailable;
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, categoryId: $categoryId, name: $name, description: $description, price: $price, discountPrice: $discountPrice, imageUrl: $imageUrl, isAvailable: $isAvailable)';
+    return 'ProductModel(id: $id, categoryId: $categoryId, name: $name, description: $description, price: $price, discountPrice: $discountPrice, imageUrl: $imageUrl, imageUrls: $imageUrls, isAvailable: $isAvailable)';
   }
 
   @override
@@ -242,14 +266,25 @@ class _$ProductModelImpl extends _ProductModel {
                 other.discountPrice == discountPrice) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
+            const DeepCollectionEquality()
+                .equals(other._imageUrls, _imageUrls) &&
             (identical(other.isAvailable, isAvailable) ||
                 other.isAvailable == isAvailable));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, categoryId, name,
-      description, price, discountPrice, imageUrl, isAvailable);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      categoryId,
+      name,
+      description,
+      price,
+      discountPrice,
+      imageUrl,
+      const DeepCollectionEquality().hash(_imageUrls),
+      isAvailable);
 
   @JsonKey(ignore: true)
   @override
@@ -274,6 +309,7 @@ abstract class _ProductModel extends ProductModel {
       required final double price,
       required final double discountPrice,
       required final String imageUrl,
+      final List<String> imageUrls,
       required final bool isAvailable}) = _$ProductModelImpl;
   const _ProductModel._() : super._();
 
@@ -294,6 +330,8 @@ abstract class _ProductModel extends ProductModel {
   double get discountPrice;
   @override
   String get imageUrl;
+  @override
+  List<String> get imageUrls;
   @override
   bool get isAvailable;
   @override

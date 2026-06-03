@@ -7,6 +7,7 @@ import '../../../../config/theme/app_spacing.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/section_header.dart';
 import '../../../../core/widgets/shimmer_loader_widget.dart';
+import '../../../categories/presentation/providers/categories_provider.dart';
 import '../../../home/presentation/providers/bottom_nav_provider.dart';
 import '../providers/banners_provider.dart';
 import '../providers/products_provider.dart';
@@ -24,9 +25,14 @@ class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});
 
   Future<void> _onRefresh(WidgetRef ref) async {
-    // Invalidate and wait for the new data to arrive
+    // Invalidate both products and categories so newly added categories
+    // appear on pull-to-refresh, then wait for the new data to arrive.
     ref.invalidate(productsProvider);
-    await ref.read(productsProvider.future);
+    ref.invalidate(categoriesProvider);
+    await Future.wait([
+      ref.read(productsProvider.future),
+      ref.read(categoriesProvider.future),
+    ]);
   }
 
   @override

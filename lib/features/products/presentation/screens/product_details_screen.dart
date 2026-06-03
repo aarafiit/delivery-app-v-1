@@ -77,8 +77,8 @@ class _ProductDetailsBody extends ConsumerWidget {
         // ── Scrollable content ─────────────────────────────────────────
         CustomScrollView(
           slivers: [
-            // Hero image with back button overlay
-            _ProductImageSliver(imageUrl: product.imageUrl),
+            // Hero image carousel with back button overlay
+            _ProductImageSliver(images: product.galleryImages),
 
             SliverToBoxAdapter(
               child: Container(
@@ -218,16 +218,34 @@ class _ProductDetailsBody extends ConsumerWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Hero image sliver with back button overlay
+// Hero image carousel sliver with back button overlay
 // ---------------------------------------------------------------------------
 
-class _ProductImageSliver extends StatelessWidget {
-  const _ProductImageSliver({required this.imageUrl});
+class _ProductImageSliver extends StatefulWidget {
+  const _ProductImageSliver({required this.images});
 
-  final String imageUrl;
+  /// Up to 3 product images. Falls back to a placeholder when empty.
+  final List<String> images;
+
+  @override
+  State<_ProductImageSliver> createState() => _ProductImageSliverState();
+}
+
+class _ProductImageSliverState extends State<_ProductImageSliver> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final images = widget.images;
+    final hasMultiple = images.length > 1;
+
     return SliverAppBar(
       expandedHeight: 300,
       pinned: false,
@@ -238,28 +256,28 @@ class _ProductImageSliver extends StatelessWidget {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return const ShimmerLoaderWidget(
-                  width: double.infinity,
-                  height: double.infinity,
-                  borderRadius: BorderRadius.zero,
-                );
-              },
-              errorBuilder: (_, __, ___) => Container(
-                color: AppColors.surfaceVariant,
-                child: const Center(
-                  child: Icon(
-                    Icons.image_outlined,
-                    size: 64,
-                    color: AppColors.textHint,
-                  ),
+            // Swipeable image carousel
+            if (images.isEmpty)
+              const _ImagePlaceholder()
+            else
+              PageView.builder(
+                controller: _pageController,
+                itemCount: images.length,
+                onPageChanged: (i) => setState(() => _currentPage = i),
+                itemBuilder: (_, index) => Image.network(
+                  images[index],
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return const ShimmerLoaderWidget(
+                      width: double.infinity,
+                      height: double.infinity,
+                      borderRadius: BorderRadius.zero,
+                    );
+                  },
+                  errorBuilder: (_, __, ___) => const _ImagePlaceholder(),
                 ),
               ),
-            ),
             // Gradient at top for back button legibility
             Positioned(
               top: 0,
@@ -279,6 +297,20 @@ class _ProductImageSliver extends StatelessWidget {
                 ),
               ),
             ),
+            // Page indicator dots (only when there is more than one image)
+            if (hasMultiple)
+              Positioned(
+                bottom: AppSpacing.lg,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    images.length,
+                    (i) => _PageDot(active: i == _currentPage),
+                  ),
+                ),
+              ),
             // Back button
             Positioned(
               top: MediaQuery.of(context).padding.top + AppSpacing.sm,
@@ -298,6 +330,47 @@ class _ProductImageSliver extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Animated dot used by the image carousel page indicator.
+class _PageDot extends StatelessWidget {
+  const _PageDot({required this.active});
+
+  final bool active;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      margin: const EdgeInsets.symmetric(horizontal: 3),
+      width: active ? 22 : 8,
+      height: 8,
+      decoration: BoxDecoration(
+        color: active ? AppColors.primary : Colors.white.withOpacity(0.7),
+        borderRadius: BorderRadius.circular(4),
+        boxShadow: AppShadows.low,
+      ),
+    );
+  }
+}
+
+/// Fallback shown when an image is missing or fails to load.
+class _ImagePlaceholder extends StatelessWidget {
+  const _ImagePlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppColors.surfaceVariant,
+      child: const Center(
+        child: Icon(
+          Icons.image_outlined,
+          size: 64,
+          color: AppColors.textHint,
         ),
       ),
     );

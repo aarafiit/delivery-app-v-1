@@ -15,6 +15,10 @@ _$ProductModelImpl _$$ProductModelImplFromJson(Map<String, dynamic> json) =>
       price: (json['price'] as num).toDouble(),
       discountPrice: (json['discountPrice'] as num).toDouble(),
       imageUrl: json['imageUrl'] as String,
+      imageUrls: (json['imageUrls'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
       isAvailable: json['isAvailable'] as bool,
     );
 
@@ -27,5 +31,6 @@ Map<String, dynamic> _$$ProductModelImplToJson(_$ProductModelImpl instance) =>
       'price': instance.price,
       'discountPrice': instance.discountPrice,
       'imageUrl': instance.imageUrl,
+      'imageUrls': instance.imageUrls,
       'isAvailable': instance.isAvailable,
     };
