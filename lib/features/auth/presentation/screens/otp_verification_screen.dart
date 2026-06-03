@@ -215,7 +215,14 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
         ),
       );
     }
-    
+
+    // Merge the guest's local cart into the server cart now that we're
+    // authenticated (POST /app/consumer/{consumerId}/cart/merge).
+    final consumerId = ref.read(authProvider).value?.user?.userId ?? '';
+    if (consumerId.isNotEmpty) {
+      await ref.read(cartProvider.notifier).mergeOnLogin(consumerId);
+    }
+
     // Navigate to intended route or home
     final intendedRoute = ref
         .read(authRedirectProvider.notifier)

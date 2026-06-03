@@ -1,4 +1,3 @@
-import 'package:delivery_app/features/cart/presentation/screens/all_carts_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +8,7 @@ import '../../features/auth/presentation/screens/auth_gateway_screen.dart';
 import '../../features/auth/presentation/screens/complete_profile_screen.dart';
 import '../../features/auth/presentation/screens/otp_verification_screen.dart';
 import '../../features/auth/presentation/screens/phone_login_screen.dart';
+import '../../features/cart/presentation/screens/cart_screen.dart';
 import '../../features/cart/presentation/screens/checkout_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
@@ -22,8 +22,9 @@ import 'app_routes.dart';
 /// List of routes that require authentication.
 /// 
 /// Requirements: 27.1, 27.2, 27.3, 27.4, 27.5, 34.6
+// Note: '/home/cart' is intentionally NOT protected — guests can view and
+// build a local cart. Sign-in is forced only at checkout (proceed to payment).
 const List<String> _protectedRoutes = [
-  '/home/cart',
   '/home/checkout',
   '/home/profile/edit',
   '/home/profile/saved-addresses',
@@ -146,7 +147,7 @@ GoRouter createAppRouter(WidgetRef ref) {
           GoRoute(
             path: 'cart',
             name: AppRoutes.cartDetailName,
-            builder: (context, state) => const AllCartsScreen(),
+            builder: (context, state) => const CartScreen(),
           ),
           GoRoute(
             path: 'checkout',
