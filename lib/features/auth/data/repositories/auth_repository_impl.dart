@@ -53,20 +53,20 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await _remoteDataSource.verifyOtp(phoneNumber, otpCode);
 
       // Validate response before storing
-      if (response.accessToken.isEmpty || 
-          response.refreshToken.isEmpty || 
-          response.userId.isEmpty) {
+      if (response.token.isEmpty || response.userId.isEmpty) {
         await _clearAuthData();
         return const Left(ServerFailure('Invalid response from server'));
       }
 
-      // Calculate token expiry
-      final tokenExpiry = DateTime.now().add(Duration(seconds: response.expiresIn));
+      // The backend returns an opaque token with no expiry, so treat it as
+      // long-lived. There is no separate refresh token, so the same token is
+      // stored in both slots to keep session restoration working.
+      final tokenExpiry = DateTime.now().add(const Duration(days: 30));
 
       // Store auth data in secure storage and shared preferences
       try {
-        await _secureStorage.saveAccessToken(response.accessToken);
-        await _secureStorage.saveRefreshToken(response.refreshToken);
+        await _secureStorage.saveAccessToken(response.token);
+        await _secureStorage.saveRefreshToken(response.token);
         await _preferences.saveTokenExpiry(tokenExpiry);
         await _preferences.setString('user_id', response.userId);
         await _preferences.setString('phone_number', response.phoneNumber);

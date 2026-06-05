@@ -11,10 +11,8 @@ _$OtpResponseModelImpl _$$OtpResponseModelImplFromJson(
     _$OtpResponseModelImpl(
       userId: json['userId'] as String,
       phoneNumber: json['phoneNumber'] as String,
-      accessToken: json['accessToken'] as String,
-      refreshToken: json['refreshToken'] as String,
-      expiresIn: (json['expiresIn'] as num).toInt(),
-      isNewUser: json['isNewUser'] as bool,
+      token: json['token'] as String,
+      isNewUser: json['isNewUser'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$OtpResponseModelImplToJson(
@@ -22,8 +20,6 @@ Map<String, dynamic> _$$OtpResponseModelImplToJson(
     <String, dynamic>{
       'userId': instance.userId,
       'phoneNumber': instance.phoneNumber,
-      'accessToken': instance.accessToken,
-      'refreshToken': instance.refreshToken,
-      'expiresIn': instance.expiresIn,
+      'token': instance.token,
       'isNewUser': instance.isNewUser,
     };
